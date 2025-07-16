@@ -52,6 +52,11 @@ flutter:
         - asset: assets/fonts/SF-Compact-Rounded-Bold.otf
           weight: 700
  
-# flutter_native_splash:
-#   color: "#FFFFFF"
-#   image: 
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/image/logo.png
+
+  android_12:
+    image: assets/image/logo.png
+    icon_background_color: "#ffffff"
+  web: false
