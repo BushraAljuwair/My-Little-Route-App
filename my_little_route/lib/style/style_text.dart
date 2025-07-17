@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_little_route/style/style_color.dart';
 
 class StyleText {
-  static var bold12Grey;
-
+ 
   static String _getFontFamily(BuildContext context) {
     final langCode = Localizations.localeOf(context).languageCode;
     return langCode == 'en' ? 'SFCompactRounded' : 'SFArabicRounded';
@@ -23,6 +22,22 @@ class StyleText {
       fontSize: 24,
       fontWeight: FontWeight.w700,
       color: _getTextColor(context),
+    );
+  }
+   static TextStyle bold20(BuildContext context) {
+    return TextStyle(
+      fontFamily: _getFontFamily(context),
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      color: _getTextColor(context),
+    );
+  }
+    static TextStyle boldBlue20(BuildContext context) {
+    return TextStyle(
+      fontFamily: _getFontFamily(context),
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      color:StyleColor.lapislazuli,
     );
   }
 
@@ -88,6 +103,15 @@ class StyleText {
       color: StyleColor.black,
     );
   }
+  
+  static TextStyle buttonText16Blue(BuildContext context) {
+    return TextStyle(
+      fontFamily: _getFontFamily(context),
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+      color: StyleColor.blue,
+    );
+  }
 
   static TextStyle buttonText12(BuildContext context) {
     return TextStyle(
@@ -121,7 +145,7 @@ class StyleText {
       fontFamily: _getFontFamily(context),
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      color: StyleColor.error,
+      color: StyleColor.red,
     );
   }
 }
