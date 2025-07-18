@@ -25,7 +25,7 @@ class CustomTextFeild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.getHeight() * .05,
+      height: context.getHeight() * .06,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextFormField(
         obscureText: isSecure,
