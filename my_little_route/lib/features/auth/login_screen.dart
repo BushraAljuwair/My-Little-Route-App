@@ -8,6 +8,7 @@ import 'package:my_little_route/features/auth/widgets/text/custom_text_title.dar
 import 'package:my_little_route/features/auth/widgets/text/custom_textbutton.dart';
 import 'package:my_little_route/features/auth/widgets/textfeild/custom_text_feild.dart';
 import 'package:my_little_route/features/loading/loading_screen.dart';
+import 'package:my_little_route/features/nav/nav_screen.dart';
 import 'package:my_little_route/utilities/helper/auth_validator.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -56,9 +57,10 @@ class LoginScreen extends StatelessWidget {
                       onPressed: () {
                         if (bloc.formKey.currentState!.validate()) {
                           log("Form is valid!");
+                          bloc.add(LogInEvent());
                            Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (contex) => LoadingScreen()),
+                          MaterialPageRoute(builder: (contex) => NavScreen()),
                         );
                         } else {
                           log("Form is invalid!");

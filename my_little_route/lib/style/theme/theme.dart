@@ -29,5 +29,22 @@ class CustomTheme {
         minimumSize: WidgetStateProperty.all(const Size.fromHeight(60)),
       ),
     ),
+    listTileTheme: ListTileThemeData(
+     horizontalTitleGap:16,
+      titleAlignment:ListTileTitleAlignment.center,
+      iconColor:StyleColor.white,
+      tileColor:StyleColor.white ,
+       titleTextStyle:TextStyle(
+        color: StyleColor.white,
+        fontSize: 22,
+        fontWeight: FontWeight.bold
+      ),
+      leadingAndTrailingTextStyle:TextStyle(
+        color: StyleColor.white,
+        fontSize: 22,
+         fontWeight: FontWeight.bold
+      )
+    )
+    
   );
 }

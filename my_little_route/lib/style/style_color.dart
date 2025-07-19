@@ -11,8 +11,11 @@ class StyleColor {
   static const black = Color(0xFF121211);
   static const gray = Color(0xFFd2d4d3);
   static const green = Color(0xFF348b54);
-  static const maize = Color(0xFFfecd4a);
+  static const maize = Color(0xFFfbcf46);
   static const tangerine = Color(0xFFf97a05);
-    static const white = Color.fromARGB(255, 255, 255, 255);
+  static const white = Color.fromARGB(255, 255, 255, 255);
+    static const seaGreen = Color(0xFF28aa85);
+
+  static const indigo = Color(0xFF7a71c9);
 
 }

@@ -5,6 +5,7 @@ import 'package:my_little_route/repository/supabase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthLayer {
+
   Future<String?> signUp({
     required String email,
     required String password,
@@ -42,7 +43,7 @@ class AuthLayer {
   }) async {
     try {
       log("start logIn user $email $password");
-      final User? response = await SupabaseConnect.logIn(email: email,password: password);
+      final AuthResponse? response = await SupabaseConnect.logIn(email: email,password: password);
       log(response.toString());
       log("end logIn succsfly");
      } on Exception catch (e) {

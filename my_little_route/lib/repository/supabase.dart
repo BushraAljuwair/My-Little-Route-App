@@ -38,7 +38,7 @@ class SupabaseConnect {
     }
   }
 
-  static Future<User?> logIn({
+  static Future<AuthResponse?> logIn({
     required String email,
     required String password,
   }) async {
@@ -49,7 +49,7 @@ class SupabaseConnect {
         password: password,
       );
       log("end logIn succsfly");
-      return response.user;
+      return response;
     } on Exception catch (e) {
       log("throw Exception in subabase  logIn");
       throw FormatException("error in register $e");
@@ -65,6 +65,28 @@ class SupabaseConnect {
     } on Exception catch (e) {
       log("throw Exception in subabase ");
       throw FormatException("error in register addUserInUserTable $e");
+    }
+  }
+
+  static Future<UserModel?> getUser({required String id}) async {
+    try {
+      log("start getting user ");
+      final userMap = await supabase!
+          .from('users')
+          .select()
+          .eq('id', id)
+          .maybeSingle();
+      if (userMap == null) {
+        log("user not found with ID: $id");
+        return null;
+      }
+      final user = UserModelMapper.fromMap(userMap);
+      log("end getting user ");
+      log(user.toString());
+      return user;
+    } catch (e) {
+      log("erorr  in get user $e");
+      throw Exception("error in get user $e");
     }
   }
 }
