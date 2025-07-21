@@ -5,7 +5,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 part 'students_models.mapper.dart';
 
 @MappableClass()
-class StudentsModels with StudentsModelsMappable {
+class StudentsModel with StudentsModelMappable {
   final String? id;
   final String name;
   @MappableField(key: 'parent_id')
@@ -13,12 +13,16 @@ class StudentsModels with StudentsModelsMappable {
   final bool status;
   @MappableField(key: 'created_at')
   final DateTime? createdAt;
-
-  StudentsModels({
+  @MappableField(key: 'driver_id')
+  final String driverId;
+  final String? gender;
+  StudentsModel({
     required this.id,
     required this.name,
     required this.parentId,
     required this.status,
     this.createdAt,
+   required this.driverId,
+   this.gender
   });
 }

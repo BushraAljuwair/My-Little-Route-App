@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class AuthButton extends StatelessWidget {
@@ -17,7 +18,7 @@ class AuthButton extends StatelessWidget {
         child: ElevatedButton(
           style: Theme.of(context).elevatedButtonTheme.style,
           onPressed: onPressed,
-          child:  Text(title),
+          child:  Text(title.tr()),
         ),
       ),
     );

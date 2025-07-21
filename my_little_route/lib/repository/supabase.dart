@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:my_little_route/models/buses/buses_model.dart';
+import 'package:my_little_route/models/student/students_models.dart';
 import 'package:my_little_route/models/user/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -88,5 +90,79 @@ class SupabaseConnect {
       log("erorr  in get user $e");
       throw Exception("error in get user $e");
     }
+  }
+
+  static Future<List<BusesModel>> getBuses() async {
+    try {
+      log("start getBuses"); // Changed log message for clarity
+
+      // Perform the select query. Supabase usually returns a List<Map<String, dynamic>>
+      final response = await supabase!.from('buses').select();
+
+      // Check if the response is not null and is a List
+      if (response != null && response.isNotEmpty) {
+        // Map the list of dynamic maps (from Supabase) to a List of BusesModel objects.
+        // .map returns an Iterable, so .toList() is essential to convert it to a List.
+        final List<BusesModel> buses = response
+            .map((busMap) => BusesModelMapper.fromMap(busMap))
+            .toList();
+
+        for (var element in buses) {
+          log(element.toString());
+        }
+        log("end getting buses. Found ${buses.length} buses.");
+        return buses; // Return the list of buses
+      } else {
+        log("Supabase response for buses was null or not a list.");
+        return []; // Return an empty list if no data or unexpected response
+      }
+    } catch (e) {
+      log("Error in getBuses: $e"); // Changed log message
+      // Re-throwing the exception is good for error propagation
+      throw Exception("Failed to get buses: $e");
+    }
+  }
+
+  static Future<List<UserModel>> getDrivers() async {
+    List<UserModel> drivers;
+    try {
+      final resopnse = await supabase!
+          .from('users')
+          .select()
+          .eq("role", 'driver');
+      if (resopnse != null && resopnse.isNotEmpty) {
+        drivers = resopnse.map((driver) {
+          return UserModelMapper.fromMap(driver);
+        }).toList();
+        return drivers;
+      }
+    } catch (e) {
+      throw Exception("error in get driver $e");
+    }
+    return [];
+  }
+
+  static Future<List<StudentsModel>> getStudents() async {
+    List<StudentsModel> students;
+    try {
+      log("start getStudents");
+      final response = await supabase!.from('students').select();
+      log("response getStudents end ");
+
+      if (response.isNotEmpty && response != null) {
+        log("response not empty  ");
+
+        students = response
+            .map((student) => StudentsModelMapper.fromMap(student))
+            .toList();
+
+        return students;
+      }
+    } catch (e) {
+      log("error in gettting students $e");
+
+      throw Exception("error in gettting students $e");
+    }
+    return [];
   }
 }

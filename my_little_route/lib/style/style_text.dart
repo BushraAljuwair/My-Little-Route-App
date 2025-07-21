@@ -76,6 +76,15 @@ class StyleText {
       color: _getTextColor(context),
     );
   }
+   static TextStyle regularBlue20(BuildContext context) {
+    return TextStyle(
+      fontFamily: _getFontFamily(context),
+      fontSize: 20,
+      fontWeight: FontWeight.w400,
+      color:StyleColor.lapislazuli,
+    );
+  }
+
 
   static TextStyle regular12(BuildContext context) {
     return TextStyle(

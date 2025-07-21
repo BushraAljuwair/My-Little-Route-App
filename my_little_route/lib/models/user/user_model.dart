@@ -5,7 +5,6 @@ import 'package:dart_mappable/dart_mappable.dart';
 part 'user_model.mapper.dart';
 
 @MappableClass()
- 
 class UserModel with UserModelMappable {
   final String name;
   final String email;
@@ -13,13 +12,19 @@ class UserModel with UserModelMappable {
   final String role;
   final String? id;
 
- 
+  @MappableField(key: 'created_at')
+  final DateTime? createdAt;
+  final String? latitude;
+  final String? longitude;
+
   UserModel({
     required this.name,
     required this.email,
     required this.phone,
     required this.role,
-      this.id,
+    this.id,
+    this.createdAt,
+    this.latitude,
+    this.longitude,
   });
-
- }
+}

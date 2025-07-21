@@ -37,7 +37,7 @@ class NavScreen extends StatelessWidget {
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.directions_bus),
-                      label: "driver",
+                      label: "Bus",
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.person),

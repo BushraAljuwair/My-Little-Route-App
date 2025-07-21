@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_little_route/utilities/extensions/screens/get_size_screen.dart';
 
@@ -19,11 +20,10 @@ class CustomListtile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0,right: 8),
+      padding: const EdgeInsets.only(left: 8.0, right: 8),
       child: Card(
         color: color,
         child: Container(
-           
           padding: EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
             color: color,
@@ -31,8 +31,8 @@ class CustomListtile extends StatelessWidget {
           ),
           child: ListTile(
             leading: Icon(icon, size: 30),
-            title: Text(title),
-            trailing: Text(tralingTitle),
+            title: Text(title.tr()),
+            trailing: Text(tralingTitle.tr()),
             onTap: onTap,
           ),
         ),

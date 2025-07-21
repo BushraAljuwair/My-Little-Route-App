@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_little_route/features/auth/bloc/auth_bloc.dart';
@@ -7,8 +8,7 @@ import 'package:my_little_route/features/auth/widgets/button/auth_button.dart';
 import 'package:my_little_route/features/auth/widgets/text/custom_text_title.dart';
 import 'package:my_little_route/features/auth/widgets/text/custom_textbutton.dart';
 import 'package:my_little_route/features/auth/widgets/textfeild/custom_text_feild.dart';
-import 'package:my_little_route/features/loading/loading_screen.dart';
-import 'package:my_little_route/features/nav/nav_screen.dart';
+ import 'package:my_little_route/features/nav/nav_screen.dart';
 import 'package:my_little_route/utilities/helper/auth_validator.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -30,13 +30,13 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextTitle(title: "Log In", isHeader: true),
+                    CustomTextTitle(title: "LogIn", isHeader: true),
                     CustomTextTitle(title: "email"),
                     CustomTextFeild(
                       validator: (value) => validateEmail(value),
                       controller: bloc.controllerEmail,
                     ),
-                    CustomTextTitle(title: "password"),
+                    CustomTextTitle(title: "password".tr()),
                     BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
                         return CustomTextFeild(
@@ -53,23 +53,23 @@ class LoginScreen extends StatelessWidget {
                     ),
 
                     AuthButton(
-                      title: 'Log In',
+                      title: "LogIn".tr(),
                       onPressed: () {
                         if (bloc.formKey.currentState!.validate()) {
                           log("Form is valid!");
                           bloc.add(LogInEvent());
-                           Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (contex) => NavScreen()),
-                        );
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (contex) => NavScreen()),
+                          );
                         } else {
                           log("Form is invalid!");
                         }
                       },
                     ),
                     CustomTextbutton(
-                      title: "Do not  have acount?",
-                      textButton: "Sign Up",
+                      title: "noaccount?".tr(),
+                      textButton: "SignUp".tr(),
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,

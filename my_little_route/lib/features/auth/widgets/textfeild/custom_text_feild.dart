@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_little_route/style/style_color.dart';
 import 'package:my_little_route/utilities/extensions/screens/get_size_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CustomTextFeild extends StatelessWidget {
   final String? hintText;
@@ -57,7 +58,7 @@ class CustomTextFeild extends StatelessWidget {
                       : Icon(Icons.visibility_off),
                 )
               : null,
-          hintText: hintText,
+          hintText: hintText!.tr(),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
         ),
       ),

@@ -1,8 +1,12 @@
+import 'dart:developer';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_little_route/features/kindergarten/home/bloc/home_bloc.dart';
 import 'package:my_little_route/features/kindergarten/home/widgets/listtile/custom_listtile.dart';
 import 'package:my_little_route/features/kindergarten/home/widgets/text/custom_text.dart';
+import 'package:my_little_route/features/kindergarten/view_drivers_screen.dart';
 import 'package:my_little_route/style/style_color.dart';
 import 'package:my_little_route/style/style_size.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -23,7 +27,7 @@ class HomeScreen extends StatelessWidget {
               builder: (context, state) {
                 return Column(
                   children: [
-                    CustomText(title: "Hello ms/sir ${bloc.user?.name}"),
+                    CustomText(title: "${'Hello' .tr()} ${bloc.user?.name}"),
                     StyleSize.sizeH16,
                     CustomListtile(
                       onTap: (){
@@ -37,7 +41,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                      CustomListtile(
                       onTap: (){
-                        //Supabase.instance.client.auth.signOut();
+log("message");
+                         Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewDriversScreen()));
                       }
                       ,
                       title: "Drivers",
@@ -47,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                      CustomListtile(
                       onTap: (){
-                        //Supabase.instance.client.auth.signOut();
+                        
                       }
                       ,
                       title: "Students",

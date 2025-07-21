@@ -30,6 +30,15 @@ class UserModelMapper extends ClassMapperBase<UserModel> {
   static const Field<UserModel, String> _f$role = Field('role', _$role);
   static String? _$id(UserModel v) => v.id;
   static const Field<UserModel, String> _f$id = Field('id', _$id, opt: true);
+  static DateTime? _$createdAt(UserModel v) => v.createdAt;
+  static const Field<UserModel, DateTime> _f$createdAt =
+      Field('createdAt', _$createdAt, key: r'created_at', opt: true);
+  static String? _$latitude(UserModel v) => v.latitude;
+  static const Field<UserModel, String> _f$latitude =
+      Field('latitude', _$latitude, opt: true);
+  static String? _$longitude(UserModel v) => v.longitude;
+  static const Field<UserModel, String> _f$longitude =
+      Field('longitude', _$longitude, opt: true);
 
   @override
   final MappableFields<UserModel> fields = const {
@@ -38,6 +47,9 @@ class UserModelMapper extends ClassMapperBase<UserModel> {
     #phone: _f$phone,
     #role: _f$role,
     #id: _f$id,
+    #createdAt: _f$createdAt,
+    #latitude: _f$latitude,
+    #longitude: _f$longitude,
   };
 
   static UserModel _instantiate(DecodingData data) {
@@ -46,7 +58,10 @@ class UserModelMapper extends ClassMapperBase<UserModel> {
         email: data.dec(_f$email),
         phone: data.dec(_f$phone),
         role: data.dec(_f$role),
-        id: data.dec(_f$id));
+        id: data.dec(_f$id),
+        createdAt: data.dec(_f$createdAt),
+        latitude: data.dec(_f$latitude),
+        longitude: data.dec(_f$longitude));
   }
 
   @override
@@ -101,7 +116,14 @@ extension UserModelValueCopy<$R, $Out> on ObjectCopyWith<$R, UserModel, $Out> {
 abstract class UserModelCopyWith<$R, $In extends UserModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? name, String? email, String? phone, String? role, String? id});
+      {String? name,
+      String? email,
+      String? phone,
+      String? role,
+      String? id,
+      DateTime? createdAt,
+      String? latitude,
+      String? longitude});
   UserModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -119,13 +141,19 @@ class _UserModelCopyWithImpl<$R, $Out>
           String? email,
           String? phone,
           String? role,
-          Object? id = $none}) =>
+          Object? id = $none,
+          Object? createdAt = $none,
+          Object? latitude = $none,
+          Object? longitude = $none}) =>
       $apply(FieldCopyWithData({
         if (name != null) #name: name,
         if (email != null) #email: email,
         if (phone != null) #phone: phone,
         if (role != null) #role: role,
-        if (id != $none) #id: id
+        if (id != $none) #id: id,
+        if (createdAt != $none) #createdAt: createdAt,
+        if (latitude != $none) #latitude: latitude,
+        if (longitude != $none) #longitude: longitude
       }));
   @override
   UserModel $make(CopyWithData data) => UserModel(
@@ -133,7 +161,10 @@ class _UserModelCopyWithImpl<$R, $Out>
       email: data.get(#email, or: $value.email),
       phone: data.get(#phone, or: $value.phone),
       role: data.get(#role, or: $value.role),
-      id: data.get(#id, or: $value.id));
+      id: data.get(#id, or: $value.id),
+      createdAt: data.get(#createdAt, or: $value.createdAt),
+      latitude: data.get(#latitude, or: $value.latitude),
+      longitude: data.get(#longitude, or: $value.longitude));
 
   @override
   UserModelCopyWith<$R2, UserModel, $Out2> $chain<$R2, $Out2>(

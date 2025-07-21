@@ -1,2 +1,27 @@
-{ 
+{
+    "LogIn": "تسجيل الدخول",
+    "email": "بريد إلكتروني",
+    "password": "كلمة المرور",
+    "noaccount?": "لا يوجد لديك حساب؟",
+    "SignUp": "انشاء حساب",
+    "Fullname": "الاسم الكامل",
+    "phone": "رقم الجوال",
+    "confirmpassword": "تأكيد كلمة المرور",
+    "CreateAccount": "إنشاء حساب",
+    "haveacount": "هل لديك حساب بالفعل؟",
+    "Hello": "مرحبا",
+    "Buses": "حافلات",
+    "Drivers": "السائقين",
+    "Students": "الطلاب",
+    "Trips": "الرحلات",
+    "BusManagement": "إدارة الحافلات",
+    "Bus": "حافلة",
+    "ViewDetails": "عرض التفاصيل",
+    "Edit": "تعديل",
+    "DriverManagement": "إدارة السائق",
+    "StudentManagement": "إدارة الطلاب",
+    "Administrator": "المسؤول",
+    "AddAdmin": "إضافة مسؤول",
+    "Logout": "تسجيل الخروج",
+    "DeleteAccount": "حذف الحساب"
 }

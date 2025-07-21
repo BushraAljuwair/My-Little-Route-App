@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_little_route/style/style_text.dart';
 import 'package:my_little_route/utilities/extensions/screens/get_size_screen.dart';
@@ -13,10 +14,10 @@ class CustomTextbutton extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(title, style: StyleText.boldBlue20(context)),
+        Text(title.tr(), style: StyleText.boldBlue20(context)),
         TextButton(
           onPressed: onPressed,
-          child: Text(textButton, style: StyleText.boldBlue20(context)),
+          child: Text(textButton.tr(), style: StyleText.boldBlue20(context)),
         ),
       ],
     );

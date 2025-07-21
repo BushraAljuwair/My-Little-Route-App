@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_little_route/features/auth/bloc/auth_bloc.dart';
 import 'package:my_little_route/features/auth/login_screen.dart';
@@ -23,7 +24,7 @@ class SignupScreen extends StatelessWidget {
         builder: (context) {
           final bloc = context.read<AuthBloc>();
           return Scaffold(
-            appBar: AppBar(title: Text("Sign up"), centerTitle: true),
+            appBar: AppBar(title: Text("SignUp".tr()), centerTitle: true),
             body: Form(
               key: bloc.formKey,
               child: SingleChildScrollView(
@@ -36,10 +37,9 @@ class SignupScreen extends StatelessWidget {
                       child: Image.asset("assets/image/bus.png"),
                     ),
 
-                    CustomTextTitle(title: "Full name"),
+                    CustomTextTitle(title: "Fullname".tr()),
                     CustomTextFeild(
                       validator: (value) => validateFullName(value),
-
                       controller: bloc.controllerName,
                     ),
 
@@ -70,7 +70,7 @@ class SignupScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    CustomTextTitle(title: "confirm password"),
+                    CustomTextTitle(title: "confirmpassword"),
                     BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
                         return CustomTextFeild(
@@ -89,7 +89,7 @@ class SignupScreen extends StatelessWidget {
                     ),
 
                     AuthButton(
-                      title: 'Create Account',
+                      title: "CreateAccount",
                       onPressed: () {
                         if (bloc.formKey.currentState!.validate()) {
                           log("Form is valid!");
@@ -106,8 +106,8 @@ class SignupScreen extends StatelessWidget {
                       },
                     ),
                     CustomTextbutton(
-                      title: "Already have acount?",
-                      textButton: "Log in",
+                      title: "haveacount",
+                      textButton:  "LogIn",
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,

@@ -31,9 +31,6 @@ class BusesModelMapper extends ClassMapperBase<BusesModel> {
   static String _$driverId(BusesModel v) => v.driverId;
   static const Field<BusesModel, String> _f$driverId =
       Field('driverId', _$driverId, key: r'driver_id');
-  static String _$routeDescription(BusesModel v) => v.routeDescription;
-  static const Field<BusesModel, String> _f$routeDescription =
-      Field('routeDescription', _$routeDescription, key: r'route_description');
 
   @override
   final MappableFields<BusesModel> fields = const {
@@ -41,7 +38,6 @@ class BusesModelMapper extends ClassMapperBase<BusesModel> {
     #plateNumber: _f$plateNumber,
     #capacity: _f$capacity,
     #driverId: _f$driverId,
-    #routeDescription: _f$routeDescription,
   };
 
   static BusesModel _instantiate(DecodingData data) {
@@ -49,8 +45,7 @@ class BusesModelMapper extends ClassMapperBase<BusesModel> {
         id: data.dec(_f$id),
         plateNumber: data.dec(_f$plateNumber),
         capacity: data.dec(_f$capacity),
-        driverId: data.dec(_f$driverId),
-        routeDescription: data.dec(_f$routeDescription));
+        driverId: data.dec(_f$driverId));
   }
 
   @override
@@ -105,12 +100,7 @@ extension BusesModelValueCopy<$R, $Out>
 
 abstract class BusesModelCopyWith<$R, $In extends BusesModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call(
-      {String? id,
-      String? plateNumber,
-      int? capacity,
-      String? driverId,
-      String? routeDescription});
+  $R call({String? id, String? plateNumber, int? capacity, String? driverId});
   BusesModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -127,23 +117,19 @@ class _BusesModelCopyWithImpl<$R, $Out>
           {Object? id = $none,
           String? plateNumber,
           int? capacity,
-          String? driverId,
-          String? routeDescription}) =>
+          String? driverId}) =>
       $apply(FieldCopyWithData({
         if (id != $none) #id: id,
         if (plateNumber != null) #plateNumber: plateNumber,
         if (capacity != null) #capacity: capacity,
-        if (driverId != null) #driverId: driverId,
-        if (routeDescription != null) #routeDescription: routeDescription
+        if (driverId != null) #driverId: driverId
       }));
   @override
   BusesModel $make(CopyWithData data) => BusesModel(
       id: data.get(#id, or: $value.id),
       plateNumber: data.get(#plateNumber, or: $value.plateNumber),
       capacity: data.get(#capacity, or: $value.capacity),
-      driverId: data.get(#driverId, or: $value.driverId),
-      routeDescription:
-          data.get(#routeDescription, or: $value.routeDescription));
+      driverId: data.get(#driverId, or: $value.driverId));
 
   @override
   BusesModelCopyWith<$R2, BusesModel, $Out2> $chain<$R2, $Out2>(

@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    
     namespace = "com.example.my_little_route"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion

@@ -6,148 +6,163 @@
 
 part of 'students_models.dart';
 
-class StudentsModelsMapper extends ClassMapperBase<StudentsModels> {
-  StudentsModelsMapper._();
+class StudentsModelMapper extends ClassMapperBase<StudentsModel> {
+  StudentsModelMapper._();
 
-  static StudentsModelsMapper? _instance;
-  static StudentsModelsMapper ensureInitialized() {
+  static StudentsModelMapper? _instance;
+  static StudentsModelMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = StudentsModelsMapper._());
+      MapperContainer.globals.use(_instance = StudentsModelMapper._());
     }
     return _instance!;
   }
 
   @override
-  final String id = 'StudentsModels';
+  final String id = 'StudentsModel';
 
-  static String? _$id(StudentsModels v) => v.id;
-  static const Field<StudentsModels, String> _f$id = Field('id', _$id);
-  static String _$name(StudentsModels v) => v.name;
-  static const Field<StudentsModels, String> _f$name = Field('name', _$name);
-  static String _$parentId(StudentsModels v) => v.parentId;
-  static const Field<StudentsModels, String> _f$parentId =
+  static String? _$id(StudentsModel v) => v.id;
+  static const Field<StudentsModel, String> _f$id = Field('id', _$id);
+  static String _$name(StudentsModel v) => v.name;
+  static const Field<StudentsModel, String> _f$name = Field('name', _$name);
+  static String _$parentId(StudentsModel v) => v.parentId;
+  static const Field<StudentsModel, String> _f$parentId =
       Field('parentId', _$parentId, key: r'parent_id');
-  static bool _$status(StudentsModels v) => v.status;
-  static const Field<StudentsModels, bool> _f$status =
-      Field('status', _$status);
-  static DateTime? _$createdAt(StudentsModels v) => v.createdAt;
-  static const Field<StudentsModels, DateTime> _f$createdAt =
+  static bool _$status(StudentsModel v) => v.status;
+  static const Field<StudentsModel, bool> _f$status = Field('status', _$status);
+  static DateTime? _$createdAt(StudentsModel v) => v.createdAt;
+  static const Field<StudentsModel, DateTime> _f$createdAt =
       Field('createdAt', _$createdAt, key: r'created_at', opt: true);
+  static String _$driverId(StudentsModel v) => v.driverId;
+  static const Field<StudentsModel, String> _f$driverId =
+      Field('driverId', _$driverId, key: r'driver_id');
+  static String? _$gender(StudentsModel v) => v.gender;
+  static const Field<StudentsModel, String> _f$gender =
+      Field('gender', _$gender, opt: true);
 
   @override
-  final MappableFields<StudentsModels> fields = const {
+  final MappableFields<StudentsModel> fields = const {
     #id: _f$id,
     #name: _f$name,
     #parentId: _f$parentId,
     #status: _f$status,
     #createdAt: _f$createdAt,
+    #driverId: _f$driverId,
+    #gender: _f$gender,
   };
 
-  static StudentsModels _instantiate(DecodingData data) {
-    return StudentsModels(
+  static StudentsModel _instantiate(DecodingData data) {
+    return StudentsModel(
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         parentId: data.dec(_f$parentId),
         status: data.dec(_f$status),
-        createdAt: data.dec(_f$createdAt));
+        createdAt: data.dec(_f$createdAt),
+        driverId: data.dec(_f$driverId),
+        gender: data.dec(_f$gender));
   }
 
   @override
   final Function instantiate = _instantiate;
 
-  static StudentsModels fromMap(Map<String, dynamic> map) {
-    return ensureInitialized().decodeMap<StudentsModels>(map);
+  static StudentsModel fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<StudentsModel>(map);
   }
 
-  static StudentsModels fromJson(String json) {
-    return ensureInitialized().decodeJson<StudentsModels>(json);
+  static StudentsModel fromJson(String json) {
+    return ensureInitialized().decodeJson<StudentsModel>(json);
   }
 }
 
-mixin StudentsModelsMappable {
+mixin StudentsModelMappable {
   String toJson() {
-    return StudentsModelsMapper.ensureInitialized()
-        .encodeJson<StudentsModels>(this as StudentsModels);
+    return StudentsModelMapper.ensureInitialized()
+        .encodeJson<StudentsModel>(this as StudentsModel);
   }
 
   Map<String, dynamic> toMap() {
-    return StudentsModelsMapper.ensureInitialized()
-        .encodeMap<StudentsModels>(this as StudentsModels);
+    return StudentsModelMapper.ensureInitialized()
+        .encodeMap<StudentsModel>(this as StudentsModel);
   }
 
-  StudentsModelsCopyWith<StudentsModels, StudentsModels, StudentsModels>
-      get copyWith =>
-          _StudentsModelsCopyWithImpl<StudentsModels, StudentsModels>(
-              this as StudentsModels, $identity, $identity);
+  StudentsModelCopyWith<StudentsModel, StudentsModel, StudentsModel>
+      get copyWith => _StudentsModelCopyWithImpl<StudentsModel, StudentsModel>(
+          this as StudentsModel, $identity, $identity);
   @override
   String toString() {
-    return StudentsModelsMapper.ensureInitialized()
-        .stringifyValue(this as StudentsModels);
+    return StudentsModelMapper.ensureInitialized()
+        .stringifyValue(this as StudentsModel);
   }
 
   @override
   bool operator ==(Object other) {
-    return StudentsModelsMapper.ensureInitialized()
-        .equalsValue(this as StudentsModels, other);
+    return StudentsModelMapper.ensureInitialized()
+        .equalsValue(this as StudentsModel, other);
   }
 
   @override
   int get hashCode {
-    return StudentsModelsMapper.ensureInitialized()
-        .hashValue(this as StudentsModels);
+    return StudentsModelMapper.ensureInitialized()
+        .hashValue(this as StudentsModel);
   }
 }
 
-extension StudentsModelsValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, StudentsModels, $Out> {
-  StudentsModelsCopyWith<$R, StudentsModels, $Out> get $asStudentsModels =>
-      $base.as((v, t, t2) => _StudentsModelsCopyWithImpl<$R, $Out>(v, t, t2));
+extension StudentsModelValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, StudentsModel, $Out> {
+  StudentsModelCopyWith<$R, StudentsModel, $Out> get $asStudentsModel =>
+      $base.as((v, t, t2) => _StudentsModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class StudentsModelsCopyWith<$R, $In extends StudentsModels, $Out>
+abstract class StudentsModelCopyWith<$R, $In extends StudentsModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
       {String? id,
       String? name,
       String? parentId,
       bool? status,
-      DateTime? createdAt});
-  StudentsModelsCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+      DateTime? createdAt,
+      String? driverId,
+      String? gender});
+  StudentsModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _StudentsModelsCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, StudentsModels, $Out>
-    implements StudentsModelsCopyWith<$R, StudentsModels, $Out> {
-  _StudentsModelsCopyWithImpl(super.value, super.then, super.then2);
+class _StudentsModelCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, StudentsModel, $Out>
+    implements StudentsModelCopyWith<$R, StudentsModel, $Out> {
+  _StudentsModelCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<StudentsModels> $mapper =
-      StudentsModelsMapper.ensureInitialized();
+  late final ClassMapperBase<StudentsModel> $mapper =
+      StudentsModelMapper.ensureInitialized();
   @override
   $R call(
           {Object? id = $none,
           String? name,
           String? parentId,
           bool? status,
-          Object? createdAt = $none}) =>
+          Object? createdAt = $none,
+          String? driverId,
+          Object? gender = $none}) =>
       $apply(FieldCopyWithData({
         if (id != $none) #id: id,
         if (name != null) #name: name,
         if (parentId != null) #parentId: parentId,
         if (status != null) #status: status,
-        if (createdAt != $none) #createdAt: createdAt
+        if (createdAt != $none) #createdAt: createdAt,
+        if (driverId != null) #driverId: driverId,
+        if (gender != $none) #gender: gender
       }));
   @override
-  StudentsModels $make(CopyWithData data) => StudentsModels(
+  StudentsModel $make(CopyWithData data) => StudentsModel(
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       parentId: data.get(#parentId, or: $value.parentId),
       status: data.get(#status, or: $value.status),
-      createdAt: data.get(#createdAt, or: $value.createdAt));
+      createdAt: data.get(#createdAt, or: $value.createdAt),
+      driverId: data.get(#driverId, or: $value.driverId),
+      gender: data.get(#gender, or: $value.gender));
 
   @override
-  StudentsModelsCopyWith<$R2, StudentsModels, $Out2> $chain<$R2, $Out2>(
+  StudentsModelCopyWith<$R2, StudentsModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _StudentsModelsCopyWithImpl<$R2, $Out2>($value, $cast, t);
+      _StudentsModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
