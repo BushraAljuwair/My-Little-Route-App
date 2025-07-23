@@ -33,11 +33,11 @@ class UserModelMapper extends ClassMapperBase<UserModel> {
   static DateTime? _$createdAt(UserModel v) => v.createdAt;
   static const Field<UserModel, DateTime> _f$createdAt =
       Field('createdAt', _$createdAt, key: r'created_at', opt: true);
-  static String? _$latitude(UserModel v) => v.latitude;
-  static const Field<UserModel, String> _f$latitude =
+  static double? _$latitude(UserModel v) => v.latitude;
+  static const Field<UserModel, double> _f$latitude =
       Field('latitude', _$latitude, opt: true);
-  static String? _$longitude(UserModel v) => v.longitude;
-  static const Field<UserModel, String> _f$longitude =
+  static double? _$longitude(UserModel v) => v.longitude;
+  static const Field<UserModel, double> _f$longitude =
       Field('longitude', _$longitude, opt: true);
 
   @override
@@ -122,8 +122,8 @@ abstract class UserModelCopyWith<$R, $In extends UserModel, $Out>
       String? role,
       String? id,
       DateTime? createdAt,
-      String? latitude,
-      String? longitude});
+      double? latitude,
+      double? longitude});
   UserModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 

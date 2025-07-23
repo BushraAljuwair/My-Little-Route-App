@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_little_route/features/auth/login_screen.dart';
+import 'package:my_little_route/features/kindergarten/add_admin/add_admin_scree.dart';
 import 'package:my_little_route/features/kindergarten/profile/bloc/profile_bloc.dart';
+import 'package:my_little_route/features/kindergarten/profile/widgets/bottomsheet/edit_prfile_bottomsheet.dart';
 import 'package:my_little_route/features/kindergarten/profile/widgets/row/profile_action.dart';
 import 'package:my_little_route/features/kindergarten/profile/widgets/text/custom_text_profile.dart';
 import 'package:my_little_route/style/style_color.dart';
@@ -25,7 +28,14 @@ class ProfileScreen extends StatelessWidget {
             appBar: AppBar(title: Text("ProfileScreen")),
             body: Column(
               children: [
-                BlocBuilder<ProfileBloc, ProfileState>(
+                BlocConsumer<ProfileBloc, ProfileState>(
+                  listener: (BuildContext context, ProfileState state) {
+                    if (state is ErrorLogOutState) {
+                      ScaffoldMessenger.maybeOf(
+                        context,
+                      )!.showSnackBar(SnackBar(content: Text(state.message)));
+                    }
+                  },
                   builder: (context, state) {
                     if (state is ErrorState) {
                       return Text(state.message);
@@ -36,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
                           Container(
                             width: context.getWidth() * .95,
                             margin: EdgeInsets.all(16),
-                            height: context.getHeight() * .2,
+                            height: context.getHeight() * .24,
                             decoration: BoxDecoration(
                               border: Border.all(width: .5),
                               borderRadius: BorderRadius.circular(16),
@@ -65,19 +75,19 @@ class ProfileScreen extends StatelessWidget {
 
                                 Row(
                                   children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        CustomTextProfile(
-                                          title: bloc.appGetit.user!.email,
-                                          icon: Icons.email,
-                                        ),
-                                        CustomTextProfile(
-                                          title: bloc.appGetit.user!.phone,
-                                          icon: Icons.phone,
-                                        ),
-                                      ],
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          CustomTextProfile(
+                                            title: bloc.appGetit.user!.email,
+                                            icon: Icons.email,
+                                          ),
+                                          CustomTextProfile(
+                                            title: bloc.appGetit.user!.phone,
+                                            icon: Icons.phone,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     StyleSize.sizeW48,
 
@@ -93,9 +103,12 @@ class ProfileScreen extends StatelessWidget {
                                               ),
                                             ),
                                           ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        editPrfileBottomsheet(context: context);
+                                      },
                                       child: Text("Edit".tr()),
                                     ),
+                                    StyleSize.sizeW8,
                                   ],
                                 ),
                               ],
@@ -106,19 +119,33 @@ class ProfileScreen extends StatelessWidget {
                             icon: Icons.person_add_alt_1,
                             actionTitile: "AddAdmin",
                             onTap: () {
-                              bloc.add(AddAdminEvent());
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddAdminScree(),
+                                ),
+                              );
                             },
                           ),
                           ProfileAction(
                             actionTitile: "Logout",
                             icon: Icons.logout,
                             onTap: () {
-                              bloc.add(LogoutEvent());
+                              bloc.add(SignOutEvent());
+                              if (state is SuccessLogOutState) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LoginScreen(),
+                                  ),
+                                  (Route<dynamic> route) => false,
+                                );
+                              }
                             },
                           ),
                           ProfileAction(
                             icon: Icons.delete_forever,
-                            actionTitile: "Delete Account",
+                            actionTitile: "DeleteAccount",
                             onTap: () {
                               bloc.add(DeleteAccountEvent());
                             },

@@ -5,7 +5,6 @@ import 'package:my_little_route/repository/supabase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthLayer {
-
   Future<String?> signUp({
     required String email,
     required String password,
@@ -36,19 +35,30 @@ class AuthLayer {
     }
   }
 
-  
-      Future<void> logIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> logIn({required String email, required String password}) async {
     try {
       log("start logIn user $email $password");
-      final AuthResponse? response = await SupabaseConnect.logIn(email: email,password: password);
+      final AuthResponse? response = await SupabaseConnect.logIn(
+        email: email,
+        password: password,
+      );
       log(response.toString());
       log("end logIn succsfly");
-     } on Exception catch (e) {
+    } on Exception catch (e) {
       log("throw Exception in subabase  logIn");
       throw FormatException("error in register $e");
     }
   }
+
+  Future<void> signOut() async {
+    try {
+      log("start sinout  user ");
+      SupabaseConnect.signOut();
+      log("end signOut succsfly");
+    } on Exception catch (e) {
+      log("throw Exception in subabase  signOut");
+      throw FormatException("error in signOut $e");
+    }
+  }
+
 }

@@ -23,5 +23,10 @@
     "Administrator": "المسؤول",
     "AddAdmin": "إضافة مسؤول",
     "Logout": "تسجيل الخروج",
-    "DeleteAccount": "حذف الحساب"
+    "DeleteAccount": "حذف الحساب",
+    "Addadmin": "إضافة المسؤول",
+    "newadmin": "إضافة مسؤول جديد",
+    "Cancel": "إلغاء",
+    "administratoradded": "تمت إضافة مسؤول جديد",
+     "Editprofile": "تعديل الملف الشخصي"
 }

@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 import 'package:my_little_route/features/kindergarten/bus/bus_screen.dart';
-import 'package:my_little_route/features/kindergarten/student_screen.dart';
+import 'package:my_little_route/features/kindergarten/student/student_screen.dart';
 import 'package:my_little_route/features/kindergarten/home/home_screen.dart';
 import 'package:my_little_route/features/kindergarten/profile/profile_screen.dart';
 

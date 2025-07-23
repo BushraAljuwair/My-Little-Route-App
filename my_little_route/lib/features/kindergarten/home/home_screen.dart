@@ -62,7 +62,7 @@ log("message");
                     ),
                        CustomListtile(
                       onTap: (){
-                        //Supabase.instance.client.auth.signOut();
+                        Supabase.instance.client.auth.signOut();
                       }
                       ,
                       title: "Trips",

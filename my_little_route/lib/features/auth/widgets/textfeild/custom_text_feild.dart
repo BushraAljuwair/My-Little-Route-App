@@ -58,7 +58,7 @@ class CustomTextFeild extends StatelessWidget {
                       : Icon(Icons.visibility_off),
                 )
               : null,
-          hintText: hintText!.tr(),
+          hintText: hintText != null ? hintText!.tr() : "",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
         ),
       ),

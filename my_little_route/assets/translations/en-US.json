@@ -23,5 +23,10 @@
         "Administrator": "Administrator",
         "AddAdmin": "Add Admin",
         "Logout": "Logout",
-        "DeleteAccount": "Delete Account"
+        "DeleteAccount": "Delete Account",
+        "Addadmin": "Add admin",
+        "newadmin": "Add new admin",
+        "Cancel": "Cancel",
+        "administratoradded": "A new administrator has been added.",
+        "Editprofile": "Edit profile"
 }

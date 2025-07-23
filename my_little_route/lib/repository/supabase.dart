@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:my_little_route/features/kindergarten/add_admin/bloc/add_admin_bloc.dart';
 import 'package:my_little_route/models/buses/buses_model.dart';
 import 'package:my_little_route/models/student/students_models.dart';
 import 'package:my_little_route/models/user/user_model.dart';
@@ -165,4 +166,28 @@ class SupabaseConnect {
     }
     return [];
   }
+
+  static Future<void> signOut() async {
+    try {
+      log("start log out ");
+      await supabase!.auth.signOut();
+      log("end log out ");
+    } catch (e) {
+      log("error  log out $e");
+      throw Exception("error in log out $e");
+    }
+  }
+
+  static Future<void> updateUserInfo({required UserModel user}) async {
+    try {
+      log("updateUserInfo start  user");
+
+      await supabase!.from('users').update(user.toMap()).eq('id', user.id!);
+      log("end succsfly updateUserInfo");
+    } on Exception catch (e) {
+      log("throw Exception in subabase ");
+      throw FormatException("error in update  $e");
+    }
+  }
+ 
 }

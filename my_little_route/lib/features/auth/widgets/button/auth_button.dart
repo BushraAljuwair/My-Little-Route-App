@@ -1,10 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:my_little_route/style/style_color.dart';
 
 class AuthButton extends StatelessWidget {
   final Function()? onPressed;
   final String title;
-  const AuthButton({super.key, this.onPressed, required this.title});
+  bool? changeButtonColor;
+    AuthButton({
+    super.key,
+    this.onPressed,
+    required this.title,
+    this.changeButtonColor = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +23,14 @@ class AuthButton extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          style: Theme.of(context).elevatedButtonTheme.style,
+          style: !changeButtonColor!
+              ? Theme.of(context).elevatedButtonTheme.style
+              : Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                  backgroundColor: WidgetStatePropertyAll(StyleColor.white),
+                  foregroundColor: WidgetStatePropertyAll(StyleColor.black),
+                ),
           onPressed: onPressed,
-          child:  Text(title.tr()),
+          child: Text(title.tr()),
         ),
       ),
     );

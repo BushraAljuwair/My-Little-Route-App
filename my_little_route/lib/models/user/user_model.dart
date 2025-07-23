@@ -14,8 +14,8 @@ class UserModel with UserModelMappable {
 
   @MappableField(key: 'created_at')
   final DateTime? createdAt;
-  final String? latitude;
-  final String? longitude;
+  final double? latitude;
+  final double? longitude;
 
   UserModel({
     required this.name,

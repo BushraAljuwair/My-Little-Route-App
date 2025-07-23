@@ -10,3 +10,6 @@ class AddAdminEvent extends ProfileEvent {}
 class LogoutEvent extends ProfileEvent {}
 
 class DeleteAccountEvent extends ProfileEvent {}
+class SignOutEvent extends ProfileEvent {}
+
+class UpdateUserInfoEvent extends ProfileEvent {}

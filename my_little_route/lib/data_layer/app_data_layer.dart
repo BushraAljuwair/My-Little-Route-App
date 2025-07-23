@@ -4,12 +4,11 @@ import 'package:my_little_route/models/buses/buses_model.dart';
 import 'package:my_little_route/models/student/students_models.dart';
 import 'package:my_little_route/models/user/user_model.dart';
 import 'package:my_little_route/repository/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AppDataLayer {
   UserModel? user;
-  // AppDataLayer(){
-  //   getUser(GetIt.);
-  // }
+
   Future<UserModel?> getUser({required String id}) async {
     try {
       log("start get user ");
@@ -48,8 +47,9 @@ class AppDataLayer {
     }
     return drivers;
   }
-  Future<List<StudentsModel>>getStudens()async{
-        List<StudentsModel> drivers;
+
+  Future<List<StudentsModel>> getStudens() async {
+    List<StudentsModel> drivers;
     try {
       log("AppDataLayer start  getStudens ");
       drivers = await SupabaseConnect.getStudents();
@@ -61,4 +61,17 @@ class AppDataLayer {
     }
     return drivers;
   }
+
+  Future<void> updateUserInfo({required UserModel user}) async {
+    try {
+      log("AppDataLayer  updateUserInfo start  user");
+
+      await SupabaseConnect.updateUserInfo(user: user);
+      log("AppDataLayer end succsfly updateUserInfo");
+    } on Exception catch (e) {
+      log("AppDataLayer  throw Exception in subabase ");
+      throw FormatException("error in update  $e");
+    }
+  }
+ 
 }

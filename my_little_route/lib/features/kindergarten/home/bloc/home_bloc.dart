@@ -20,12 +20,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // TODO: implement event handler
     });
   }
-  Future<void> getUser() async{
+  Future<void> getUser() async {
     try {
       log("start get user ");
       //
       log(auhtServivsesGetit.currentUser.toString());
-   user=await  appGetit.getUser(id:  auhtServivsesGetit.currentUser!.id);
+      if (appGetit.user == null) {
+        user = await appGetit.getUser(id: auhtServivsesGetit.currentUser!.id);
+      } else {
+        user = appGetit.user;
+      }
+
       log("end get user ");
     } catch (e) {
       log("error in get user $e");
