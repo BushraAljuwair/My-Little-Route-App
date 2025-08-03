@@ -20,14 +20,15 @@ class TripStudentsModelMapper extends ClassMapperBase<TripStudentsModel> {
   @override
   final String id = 'TripStudentsModel';
 
-  static String _$pickupStatus(TripStudentsModel v) => v.pickupStatus;
-  static const Field<TripStudentsModel, String> _f$pickupStatus =
+  static bool _$pickupStatus(TripStudentsModel v) => v.pickupStatus;
+  static const Field<TripStudentsModel, bool> _f$pickupStatus =
       Field('pickupStatus', _$pickupStatus, key: r'pickup_status');
-  static String _$dropoffStatus(TripStudentsModel v) => v.dropoffStatus;
-  static const Field<TripStudentsModel, String> _f$dropoffStatus =
+  static bool _$dropoffStatus(TripStudentsModel v) => v.dropoffStatus;
+  static const Field<TripStudentsModel, bool> _f$dropoffStatus =
       Field('dropoffStatus', _$dropoffStatus, key: r'dropoff_status');
   static String? _$id(TripStudentsModel v) => v.id;
-  static const Field<TripStudentsModel, String> _f$id = Field('id', _$id);
+  static const Field<TripStudentsModel, String> _f$id =
+      Field('id', _$id, opt: true);
   static String _$tripId(TripStudentsModel v) => v.tripId;
   static const Field<TripStudentsModel, String> _f$tripId =
       Field('tripId', _$tripId, key: r'trip_id');
@@ -36,7 +37,7 @@ class TripStudentsModelMapper extends ClassMapperBase<TripStudentsModel> {
       Field('studentId', _$studentId, key: r'student_id');
   static DateTime? _$dropoffTime(TripStudentsModel v) => v.dropoffTime;
   static const Field<TripStudentsModel, DateTime> _f$dropoffTime =
-      Field('dropoffTime', _$dropoffTime, key: r'dropoff_time');
+      Field('dropoffTime', _$dropoffTime, key: r'dropoff_time', opt: true);
   static DateTime? _$pickupTime(TripStudentsModel v) => v.pickupTime;
   static const Field<TripStudentsModel, DateTime> _f$pickupTime =
       Field('pickupTime', _$pickupTime, key: r'pickup_time', opt: true);
@@ -120,8 +121,8 @@ extension TripStudentsModelValueCopy<$R, $Out>
 abstract class TripStudentsModelCopyWith<$R, $In extends TripStudentsModel,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? pickupStatus,
-      String? dropoffStatus,
+      {bool? pickupStatus,
+      bool? dropoffStatus,
       String? id,
       String? tripId,
       String? studentId,
@@ -141,8 +142,8 @@ class _TripStudentsModelCopyWithImpl<$R, $Out>
       TripStudentsModelMapper.ensureInitialized();
   @override
   $R call(
-          {String? pickupStatus,
-          String? dropoffStatus,
+          {bool? pickupStatus,
+          bool? dropoffStatus,
           Object? id = $none,
           String? tripId,
           String? studentId,

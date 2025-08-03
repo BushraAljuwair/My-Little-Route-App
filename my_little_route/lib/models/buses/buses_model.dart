@@ -13,14 +13,20 @@ class BusesModel with BusesModelMappable {
   //String
   @MappableField(key: 'driver_id')
   final String driverId;
-  // @MappableField(key: 'route_description')
-  // final String routeDescription;
+  @MappableField(key: 'bus_number')
+  final int busNumber;
+  final String model;
+
+  @MappableField(key: 'bus_name')
+  final String busName;
 
   BusesModel({
     required this.id,
     required this.plateNumber,
     required this.capacity,
     required this.driverId,
-    // required this.routeDescription,
+    required this.busName,
+    required this.busNumber,
+    required this.model,
   });
 }

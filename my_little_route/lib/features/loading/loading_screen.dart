@@ -14,13 +14,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 //   Widget build(BuildContext context) {
 //    final  appGetit=GetIt.I.get<AppDataLayer>();
 //     return Scaffold(
-      
+
 //       body: StreamBuilder(
 //         stream: Supabase.instance.client.auth.onAuthStateChange,
 //         builder: (context, snapshot)  {
 //           final authState = snapshot.data;
 //           if (authState == null) {
-//             //error 
+//             //error
 //             return Text("error ");
 //           } else {
 //             final session = authState.session;
@@ -28,24 +28,22 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 //                  appGetit.getUser(id: session.user.id);
 //                 if(appGetit.user!.role=="admin")
 //              {
-//                return NavScreen();//user loggd in 
+//                return NavScreen();//user loggd in
 //              }else    if(appGetit.user!.role=="driver"){
 //               return  DriverNavScreen();
 //              }else  {
 //                   return ParentNavScreen();
 //              }
 //             } else {
-//               return LoginScreen();//user not log in 
+//               return LoginScreen();//user not log in
 //             }
 //           }
-           
+
 //         },
 //       ),
 //     );
 //   }
 // }
-
-
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
@@ -61,7 +59,9 @@ class LoadingScreen extends StatelessWidget {
           final authState = snapshot.data;
 
           if (authState == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoginScreen();
+
+            // return const Center(child: CircularProgressIndicator());
           }
 
           final session = authState.session;
@@ -69,7 +69,7 @@ class LoadingScreen extends StatelessWidget {
             return const LoginScreen();
           }
 
-           return FutureBuilder(
+          return FutureBuilder(
             future: appGetit.getUser(id: session.user.id),
             builder: (context, userSnapshot) {
               if (userSnapshot.connectionState == ConnectionState.waiting) {

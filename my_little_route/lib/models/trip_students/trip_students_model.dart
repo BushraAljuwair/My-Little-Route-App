@@ -7,26 +7,26 @@ part 'trip_students_model.mapper.dart';
 @MappableClass()
 class TripStudentsModel with TripStudentsModelMappable {
   final String? id;
-  //student_id
   @MappableField(key: 'trip_id')
   final String tripId;
   @MappableField(key: 'student_id')
   final String studentId;
   @MappableField(key: 'pickup_status')
-  final String pickupStatus;
+  final bool pickupStatus;
   @MappableField(key: 'dropoff_status')
-  final String dropoffStatus;
+  final bool dropoffStatus;
   @MappableField(key: 'pickup_time')
   final DateTime? pickupTime;
   @MappableField(key: 'dropoff_time')
   final DateTime? dropoffTime;
 
   TripStudentsModel({
-   required this.pickupStatus,required this.dropoffStatus, 
-    required this.id,
+    required this.pickupStatus,
+    required this.dropoffStatus,
+    this.id,
     required this.tripId,
     required this.studentId,
-    required this.dropoffTime,
+    this.dropoffTime,
     this.pickupTime,
   });
 }

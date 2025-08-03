@@ -20,6 +20,12 @@ class StudentsModelMapper extends ClassMapperBase<StudentsModel> {
   @override
   final String id = 'StudentsModel';
 
+  static double? _$latitude(StudentsModel v) => v.latitude;
+  static const Field<StudentsModel, double> _f$latitude =
+      Field('latitude', _$latitude, opt: true);
+  static double? _$longitude(StudentsModel v) => v.longitude;
+  static const Field<StudentsModel, double> _f$longitude =
+      Field('longitude', _$longitude, opt: true);
   static String? _$id(StudentsModel v) => v.id;
   static const Field<StudentsModel, String> _f$id = Field('id', _$id);
   static String _$name(StudentsModel v) => v.name;
@@ -27,8 +33,9 @@ class StudentsModelMapper extends ClassMapperBase<StudentsModel> {
   static String _$parentId(StudentsModel v) => v.parentId;
   static const Field<StudentsModel, String> _f$parentId =
       Field('parentId', _$parentId, key: r'parent_id');
-  static bool _$status(StudentsModel v) => v.status;
-  static const Field<StudentsModel, bool> _f$status = Field('status', _$status);
+  static String _$status(StudentsModel v) => v.status;
+  static const Field<StudentsModel, String> _f$status =
+      Field('status', _$status);
   static DateTime? _$createdAt(StudentsModel v) => v.createdAt;
   static const Field<StudentsModel, DateTime> _f$createdAt =
       Field('createdAt', _$createdAt, key: r'created_at', opt: true);
@@ -41,6 +48,8 @@ class StudentsModelMapper extends ClassMapperBase<StudentsModel> {
 
   @override
   final MappableFields<StudentsModel> fields = const {
+    #latitude: _f$latitude,
+    #longitude: _f$longitude,
     #id: _f$id,
     #name: _f$name,
     #parentId: _f$parentId,
@@ -52,6 +61,8 @@ class StudentsModelMapper extends ClassMapperBase<StudentsModel> {
 
   static StudentsModel _instantiate(DecodingData data) {
     return StudentsModel(
+        latitude: data.dec(_f$latitude),
+        longitude: data.dec(_f$longitude),
         id: data.dec(_f$id),
         name: data.dec(_f$name),
         parentId: data.dec(_f$parentId),
@@ -115,10 +126,12 @@ extension StudentsModelValueCopy<$R, $Out>
 abstract class StudentsModelCopyWith<$R, $In extends StudentsModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? id,
+      {double? latitude,
+      double? longitude,
+      String? id,
       String? name,
       String? parentId,
-      bool? status,
+      String? status,
       DateTime? createdAt,
       String? driverId,
       String? gender});
@@ -135,14 +148,18 @@ class _StudentsModelCopyWithImpl<$R, $Out>
       StudentsModelMapper.ensureInitialized();
   @override
   $R call(
-          {Object? id = $none,
+          {Object? latitude = $none,
+          Object? longitude = $none,
+          Object? id = $none,
           String? name,
           String? parentId,
-          bool? status,
+          String? status,
           Object? createdAt = $none,
           String? driverId,
           Object? gender = $none}) =>
       $apply(FieldCopyWithData({
+        if (latitude != $none) #latitude: latitude,
+        if (longitude != $none) #longitude: longitude,
         if (id != $none) #id: id,
         if (name != null) #name: name,
         if (parentId != null) #parentId: parentId,
@@ -153,6 +170,8 @@ class _StudentsModelCopyWithImpl<$R, $Out>
       }));
   @override
   StudentsModel $make(CopyWithData data) => StudentsModel(
+      latitude: data.get(#latitude, or: $value.latitude),
+      longitude: data.get(#longitude, or: $value.longitude),
       id: data.get(#id, or: $value.id),
       name: data.get(#name, or: $value.name),
       parentId: data.get(#parentId, or: $value.parentId),

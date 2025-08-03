@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:my_little_route/style/style_color.dart';
 
 class StyleText {
- 
   static String _getFontFamily(BuildContext context) {
     final langCode = Localizations.localeOf(context).languageCode;
     return langCode == 'en' ? 'SFCompactRounded' : 'SFArabicRounded';
@@ -24,7 +23,26 @@ class StyleText {
       color: _getTextColor(context),
     );
   }
-   static TextStyle bold20(BuildContext context) {
+
+  static TextStyle bold36(BuildContext context) {
+    return TextStyle(
+      fontFamily: _getFontFamily(context),
+      fontSize: 36,
+      fontWeight: FontWeight.w700,
+      color: _getTextColor(context),
+    );
+  }
+
+  static TextStyle bold30(BuildContext context) {
+    return TextStyle(
+      fontFamily: _getFontFamily(context),
+      fontSize: 30,
+      fontWeight: FontWeight.w700,
+      color: _getTextColor(context),
+    );
+  }
+
+  static TextStyle bold20(BuildContext context) {
     return TextStyle(
       fontFamily: _getFontFamily(context),
       fontSize: 20,
@@ -32,12 +50,13 @@ class StyleText {
       color: _getTextColor(context),
     );
   }
-    static TextStyle boldBlue20(BuildContext context) {
+
+  static TextStyle boldBlue20(BuildContext context) {
     return TextStyle(
       fontFamily: _getFontFamily(context),
       fontSize: 20,
       fontWeight: FontWeight.w700,
-      color:StyleColor.lapislazuli,
+      color: StyleColor.lapislazuli,
     );
   }
 
@@ -76,15 +95,15 @@ class StyleText {
       color: _getTextColor(context),
     );
   }
-   static TextStyle regularBlue20(BuildContext context) {
+
+  static TextStyle regularBlue20(BuildContext context) {
     return TextStyle(
       fontFamily: _getFontFamily(context),
       fontSize: 20,
       fontWeight: FontWeight.w400,
-      color:StyleColor.lapislazuli,
+      color: StyleColor.lapislazuli,
     );
   }
-
 
   static TextStyle regular12(BuildContext context) {
     return TextStyle(
@@ -112,7 +131,7 @@ class StyleText {
       color: StyleColor.black,
     );
   }
-  
+
   static TextStyle buttonText16Blue(BuildContext context) {
     return TextStyle(
       fontFamily: _getFontFamily(context),
@@ -157,4 +176,10 @@ class StyleText {
       color: StyleColor.red,
     );
   }
+
+  static TextStyle bold18(BuildContext context, {Color? color}) => TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: _getTextColor(context),
+  );
 }

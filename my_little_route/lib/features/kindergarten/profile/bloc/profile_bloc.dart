@@ -25,6 +25,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final formKey = GlobalKey<FormState>();
 
   ProfileBloc() : super(ProfileInitial()) {
+   
     on<ProfileEvent>((event, emit) {
       // TODO: implement event handler
     });
@@ -81,12 +82,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     // emit(ProfileLoadingState());
 
     try {
-     
-
       UserModel currentUser = appGetit.user!;
-       updateUserEmail(userId: currentUser.id!,newEmail: controllerEmail.text);
+      if (appGetit.user!.email != controllerEmail.text.trim()) {
+        updateUserEmail(
+          userId: currentUser.id!,
+          newEmail: controllerEmail.text,
+        );
+      }
       log("userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-       await appGetit.updateUserInfo(
+      await appGetit.updateUserInfo(
         user: UserModel(
           id: appGetit.user!.id,
           email: controllerEmail.text,
@@ -98,15 +102,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           longitude: appGetit.user!.longitude,
         ),
       );
-     await  appGetit.getUser(id: currentUser.id!);
+      await appGetit.getUser(id: currentUser.id!);
       emit(SuccessState());
       log("User update failed: No user object in auth response.");
-      emit(
-        ProfileErrorState(
-          message: "User update failed: No user object in auth response.",
-        ),
-      );
-      // }
     } on AuthException catch (e) {
       log("AuthException during user info update: ${e.message}");
       emit(

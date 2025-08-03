@@ -10,13 +10,18 @@ class StudentsModel with StudentsModelMappable {
   final String name;
   @MappableField(key: 'parent_id')
   final String parentId;
-  final bool status;
+  final String status;
   @MappableField(key: 'created_at')
   final DateTime? createdAt;
   @MappableField(key: 'driver_id')
   final String driverId;
   final String? gender;
+    final double? latitude;
+  final double? longitude;
+
   StudentsModel({
+     this.latitude,
+    this.longitude,
     required this.id,
     required this.name,
     required this.parentId,

@@ -31,6 +31,14 @@ class BusesModelMapper extends ClassMapperBase<BusesModel> {
   static String _$driverId(BusesModel v) => v.driverId;
   static const Field<BusesModel, String> _f$driverId =
       Field('driverId', _$driverId, key: r'driver_id');
+  static String _$busName(BusesModel v) => v.busName;
+  static const Field<BusesModel, String> _f$busName =
+      Field('busName', _$busName, key: r'bus_name');
+  static int _$busNumber(BusesModel v) => v.busNumber;
+  static const Field<BusesModel, int> _f$busNumber =
+      Field('busNumber', _$busNumber, key: r'bus_number');
+  static String _$model(BusesModel v) => v.model;
+  static const Field<BusesModel, String> _f$model = Field('model', _$model);
 
   @override
   final MappableFields<BusesModel> fields = const {
@@ -38,6 +46,9 @@ class BusesModelMapper extends ClassMapperBase<BusesModel> {
     #plateNumber: _f$plateNumber,
     #capacity: _f$capacity,
     #driverId: _f$driverId,
+    #busName: _f$busName,
+    #busNumber: _f$busNumber,
+    #model: _f$model,
   };
 
   static BusesModel _instantiate(DecodingData data) {
@@ -45,7 +56,10 @@ class BusesModelMapper extends ClassMapperBase<BusesModel> {
         id: data.dec(_f$id),
         plateNumber: data.dec(_f$plateNumber),
         capacity: data.dec(_f$capacity),
-        driverId: data.dec(_f$driverId));
+        driverId: data.dec(_f$driverId),
+        busName: data.dec(_f$busName),
+        busNumber: data.dec(_f$busNumber),
+        model: data.dec(_f$model));
   }
 
   @override
@@ -100,7 +114,14 @@ extension BusesModelValueCopy<$R, $Out>
 
 abstract class BusesModelCopyWith<$R, $In extends BusesModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? id, String? plateNumber, int? capacity, String? driverId});
+  $R call(
+      {String? id,
+      String? plateNumber,
+      int? capacity,
+      String? driverId,
+      String? busName,
+      int? busNumber,
+      String? model});
   BusesModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -117,19 +138,28 @@ class _BusesModelCopyWithImpl<$R, $Out>
           {Object? id = $none,
           String? plateNumber,
           int? capacity,
-          String? driverId}) =>
+          String? driverId,
+          String? busName,
+          int? busNumber,
+          String? model}) =>
       $apply(FieldCopyWithData({
         if (id != $none) #id: id,
         if (plateNumber != null) #plateNumber: plateNumber,
         if (capacity != null) #capacity: capacity,
-        if (driverId != null) #driverId: driverId
+        if (driverId != null) #driverId: driverId,
+        if (busName != null) #busName: busName,
+        if (busNumber != null) #busNumber: busNumber,
+        if (model != null) #model: model
       }));
   @override
   BusesModel $make(CopyWithData data) => BusesModel(
       id: data.get(#id, or: $value.id),
       plateNumber: data.get(#plateNumber, or: $value.plateNumber),
       capacity: data.get(#capacity, or: $value.capacity),
-      driverId: data.get(#driverId, or: $value.driverId));
+      driverId: data.get(#driverId, or: $value.driverId),
+      busName: data.get(#busName, or: $value.busName),
+      busNumber: data.get(#busNumber, or: $value.busNumber),
+      model: data.get(#model, or: $value.model));
 
   @override
   BusesModelCopyWith<$R2, BusesModel, $Out2> $chain<$R2, $Out2>(
