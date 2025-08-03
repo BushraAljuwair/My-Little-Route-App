@@ -1,6 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
 
- // ignore_for_file: depend_on_referenced_packages
- 
 import 'dart:async';
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
@@ -42,6 +41,7 @@ class DriverTripBloc extends Bloc<DriverTripEvent, DriverTripState> {
   BitmapDescriptor? maleChildMarkerIcon;
   BitmapDescriptor? femaleChildMarkerIcon;
   BitmapDescriptor? pickedUpChildMarkerIcon;
+  BitmapDescriptor? school;
 
   DriverTripBloc() : super(DriverTripInitial()) {
     on<GetDriverAndStudentsEvent>(getDriverAndStudentsMethod);
@@ -54,46 +54,12 @@ class DriverTripBloc extends Bloc<DriverTripEvent, DriverTripState> {
     _loadCustomMarkers();
   }
 
-  Future<BitmapDescriptor> _getBytesFromAsset(String path, int width) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(
-      data.buffer.asUint8List(),
-      targetWidth: width,
-    );
-    ui.FrameInfo fi = await codec.getNextFrame();
-    ByteData? byteData = await fi.image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
-  }
-
-  Future<void> _loadCustomMarkers() async {
-    try {
-      busIcon = await _getBytesFromAsset('assets/image/bus-icon.png', 100);
-      maleChildMarkerIcon = await _getBytesFromAsset(
-        'assets/image/marker-child.png',
-        100,
-      );
-      femaleChildMarkerIcon = await _getBytesFromAsset(
-        'assets/image/marker-girl.png',
-        100,
-      );
-
-      pickedUpChildMarkerIcon = BitmapDescriptor.defaultMarkerWithHue(
-        BitmapDescriptor.hueGreen,
-      );
-      log("Custom markers loaded successfully.");
-    } catch (e) {
-      log("Error loading custom markers: $e");
-    }
-  }
-
   FutureOr<void> getDriverAndStudentsMethod(
     GetDriverAndStudentsEvent event,
     Emitter<DriverTripState> emit,
   ) async {
     try {
-      sharedPrefs.clear();
+      // sharedPrefs.clear();
       emit(LoadingState());
       if (appGetit.user == null) {
         await appGetit.getUser(id: authServiceLGetit.currentUser!.id);
@@ -133,34 +99,6 @@ class DriverTripBloc extends Bloc<DriverTripEvent, DriverTripState> {
       emit(SuccessState());
     } catch (e) {
       emit(ErrorState(messge: e.toString()));
-    }
-  }
-
-  FutureOr<void> getTripMethod(
-    GetTripEvent event,
-    Emitter<DriverTripState> emit,
-  ) async {
-    try {
-      if (sharedPrefs.getString("trip_id") != null) {
-        log("start bloc getTripMethod");
-        trip = await appGetit.getTrip(
-          tripId: sharedPrefs.getString("trip_id").toString(),
-        );
-
-        tripStops = await appGetit.getTripStops(
-          tripId: sharedPrefs.getString("trip_id").toString(),
-        );
-        studentsTrip = await appGetit.getStudentsTrip(
-          tripId: sharedPrefs.getString("trip_id").toString(),
-        );
-        emit(SucssesGetTripState());
-      } else {
-        add(CreateTripEvent());
-      }
-    } on Exception catch (e) {
-      log("sqqqq");
-      emit(ErrorGetTripState(messge: e.toString()));
-      log(e.toString());
     }
   }
 
@@ -227,79 +165,6 @@ class DriverTripBloc extends Bloc<DriverTripEvent, DriverTripState> {
     }
   }
 
-  FutureOr<void> updateStudentStatusMethod(
-    UpdateStudentStatusEvent event,
-    Emitter<DriverTripState> emit,
-  ) async {
-    try {
-      log("start bloc updateStudentStatusMethod");
-      TripStudentsModel? updatedStudentTrip;
-
-      if (event.tripType == 'pickup') {
-        updatedStudentTrip = await appGetit.updateStudentPickupStatus(
-          studentTrip: TripStudentsModel(
-            tripId: event.tripStudent.tripId,
-            studentId: event.student.id!,
-            pickupStatus: event.newStatus,
-            pickupTime: event.newStatus ? DateTime.now() : null,
-            dropoffStatus: false,
-          ),
-        );
-      } else if (event.tripType == 'dropoff') {
-        updatedStudentTrip = await appGetit.updateStudentDropOffStatus(
-          studentTrip: TripStudentsModel(
-            tripId: event.tripStudent.tripId,
-            studentId: event.student.id!,
-            dropoffStatus: event.newStatus,
-            dropoffTime: event.newStatus ? DateTime.now() : null,
-            pickupStatus: event.tripStudent.pickupStatus,
-          ),
-        );
-      } else {
-        log("Error: Unknown trip type: ${event.tripType}");
-        emit(ErrorState(messge: "Unknown trip type for status update."));
-        return;
-      }
-
-      if (updatedStudentTrip != null) {
-        final index = studentsTrip!.indexWhere(
-          (tripStudent) =>
-              tripStudent.tripId == event.tripStudent.tripId &&
-              tripStudent.studentId == event.student.id,
-        );
-
-        if (index != -1) {
-          studentsTrip![index] = updatedStudentTrip;
-        }
-      }
-      log("--------------------------------");
-      for (var element in students!) {
-        log("--------------------------------");
-        log(element.toString());
-      }
-      emit(SuccessState());
-    } catch (e) {
-      emit(ErrorState(messge: e.toString()));
-    }
-  }
-   
-
-  FutureOr<void> endTripMethod(
-    EndTripEvent event,
-    Emitter<DriverTripState> emit,
-  ) {}
-
-  //fucntions
-
-  double calculateDistance(
-    double startLat,
-    double startLng,
-    double endLat,
-    double endLng,
-  ) {
-    return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
-  }
-
   FutureOr<void> updateMapData(
     UpdateMapDataEvent event,
     Emitter<DriverTripState> emit,
@@ -337,15 +202,6 @@ class DriverTripBloc extends Bloc<DriverTripEvent, DriverTripState> {
             // البحث عن حالة الطالب في الرحلة الحالية
             final studentTripStatus = studentsTrip?.firstWhere(
               (ts) => ts.studentId == student.id && ts.tripId == trip?.id,
-              orElse: () => TripStudentsModel(
-                // أضف orElse لتجنب الخطأ لو الطالب مش موجود في studentsTrip
-                tripId: trip?.id ?? '', // قيمة افتراضية مناسبة
-                studentId: student.id ?? '', // قيمة افتراضية مناسبة
-                pickupStatus: false,
-                dropoffStatus: false,
-                pickupTime: null,
-                dropoffTime: null,
-              ),
             );
 
             BitmapDescriptor studentIcon;
@@ -394,17 +250,36 @@ class DriverTripBloc extends Bloc<DriverTripEvent, DriverTripState> {
         }
       }
 
+      mapMarkers.add(
+        Marker(
+          markerId: MarkerId("My little Route "),
+          position: LatLng(24.5412682270113, 46.6648522263772),
+          infoWindow: InfoWindow(title: "My little Route school"),
+          icon: school!,
+        ),
+      );
+       polylinePoints.add(
+              LatLng(24.5412682270113, 46.6648522263772),
+            ); 
       // إضافة المسار (Polyline)
       if (polylinePoints.length > 1) {
-        // تأكد من وجود نقطتين على الأقل لرسم خط
-        mapPolylines.add(
+         mapPolylines.add(
           Polyline(
             polylineId: PolylineId('driver_route'),
             points: polylinePoints,
-            color: StyleColor.buttonBlue, // لون المسار الذي طلبته
+            color: StyleColor.buttonBlue,  
             width: 5,
           ),
         );
+
+        // mapPolylines.add(
+        //   Polyline(
+        //     polylineId: PolylineId('my little route 2'),
+        //     points: polylinePoints,
+        //     color: StyleColor.buttonBlue, // لون المسار الذي طلبته
+        //     width: 5,
+        //   ),
+        // );
       }
     } else {
       // رسالة تسجيل (log) في حال عدم توفر موقع السائق
@@ -480,5 +355,143 @@ class DriverTripBloc extends Bloc<DriverTripEvent, DriverTripState> {
         emit(ErrorState(messge: " ${e.toString()}"));
       }
     }
+  }
+
+  FutureOr<void> getTripMethod(
+    GetTripEvent event,
+    Emitter<DriverTripState> emit,
+  ) async {
+    try {
+      if (sharedPrefs.getString("trip_id") != null) {
+        log("start bloc getTripMethod");
+        trip = await appGetit.getTrip(
+          tripId: sharedPrefs.getString("trip_id").toString(),
+        );
+
+        tripStops = await appGetit.getTripStops(
+          tripId: sharedPrefs.getString("trip_id").toString(),
+        );
+        studentsTrip = await appGetit.getStudentsTrip(
+          tripId: sharedPrefs.getString("trip_id").toString(),
+        );
+        emit(SucssesGetTripState());
+      } else {
+        add(CreateTripEvent());
+      }
+    } on Exception catch (e) {
+      log("sqqqq");
+      emit(ErrorGetTripState(messge: e.toString()));
+      log(e.toString());
+    }
+  }
+
+  Future<BitmapDescriptor> _getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(
+      data.buffer.asUint8List(),
+      targetWidth: width,
+    );
+    ui.FrameInfo fi = await codec.getNextFrame();
+    ByteData? byteData = await fi.image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
+    return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
+  }
+
+  Future<void> _loadCustomMarkers() async {
+    try {
+      busIcon = await _getBytesFromAsset('assets/image/bus-icon.png', 100);
+      maleChildMarkerIcon = await _getBytesFromAsset(
+        'assets/image/marker-child.png',
+        100,
+      );
+      femaleChildMarkerIcon = await _getBytesFromAsset(
+        'assets/image/marker-girl.png',
+        100,
+      );
+
+      pickedUpChildMarkerIcon = BitmapDescriptor.defaultMarkerWithHue(
+        BitmapDescriptor.hueGreen,
+      );
+      school = await _getBytesFromAsset(
+        "assets/image/marker-Kindergarten.png",
+        100,
+      );
+      log("Custom markers loaded successfully.");
+    } catch (e) {
+      log("Error loading custom markers: $e");
+    }
+  }
+
+  FutureOr<void> updateStudentStatusMethod(
+    UpdateStudentStatusEvent event,
+    Emitter<DriverTripState> emit,
+  ) async {
+    try {
+      log("start bloc updateStudentStatusMethod");
+      TripStudentsModel? updatedStudentTrip;
+
+      if (event.tripType == 'pickup') {
+        updatedStudentTrip = await appGetit.updateStudentPickupStatus(
+          studentTrip: TripStudentsModel(
+            tripId: event.tripStudent.tripId,
+            studentId: event.student.id!,
+            pickupStatus: event.newStatus,
+            pickupTime: event.newStatus ? DateTime.now() : null,
+            dropoffStatus: false,
+          ),
+        );
+      } else if (event.tripType == 'dropoff') {
+        updatedStudentTrip = await appGetit.updateStudentDropOffStatus(
+          studentTrip: TripStudentsModel(
+            tripId: event.tripStudent.tripId,
+            studentId: event.student.id!,
+            dropoffStatus: event.newStatus,
+            dropoffTime: event.newStatus ? DateTime.now() : null,
+            pickupStatus: event.tripStudent.pickupStatus,
+          ),
+        );
+      } else {
+        log("Error: Unknown trip type: ${event.tripType}");
+        emit(ErrorState(messge: "Unknown trip type for status update."));
+        return;
+      }
+
+      if (updatedStudentTrip != null) {
+        final index = studentsTrip!.indexWhere(
+          (tripStudent) =>
+              tripStudent.tripId == event.tripStudent.tripId &&
+              tripStudent.studentId == event.student.id,
+        );
+
+        if (index != -1) {
+          studentsTrip![index] = updatedStudentTrip;
+        }
+      }
+      log("--------------------------------");
+      for (var element in students!) {
+        log("--------------------------------");
+        log(element.toString());
+      }
+      emit(SuccessState());
+    } catch (e) {
+      emit(ErrorState(messge: e.toString()));
+    }
+  }
+
+  FutureOr<void> endTripMethod(
+    EndTripEvent event,
+    Emitter<DriverTripState> emit,
+  ) {}
+
+  //fucntions
+
+  double calculateDistance(
+    double startLat,
+    double startLng,
+    double endLat,
+    double endLng,
+  ) {
+    return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
   }
 }
