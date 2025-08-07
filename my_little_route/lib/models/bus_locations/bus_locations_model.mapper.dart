@@ -25,11 +25,11 @@ class BusLocationsModelMapper extends ClassMapperBase<BusLocationsModel> {
   static String _$busId(BusLocationsModel v) => v.busId;
   static const Field<BusLocationsModel, String> _f$busId =
       Field('busId', _$busId, key: r'bus_id');
-  static String _$latitude(BusLocationsModel v) => v.latitude;
-  static const Field<BusLocationsModel, String> _f$latitude =
+  static double _$latitude(BusLocationsModel v) => v.latitude;
+  static const Field<BusLocationsModel, double> _f$latitude =
       Field('latitude', _$latitude);
-  static String _$longitude(BusLocationsModel v) => v.longitude;
-  static const Field<BusLocationsModel, String> _f$longitude =
+  static double _$longitude(BusLocationsModel v) => v.longitude;
+  static const Field<BusLocationsModel, double> _f$longitude =
       Field('longitude', _$longitude);
   static DateTime? _$timestamp(BusLocationsModel v) => v.timestamp;
   static const Field<BusLocationsModel, DateTime> _f$timestamp =
@@ -112,8 +112,8 @@ abstract class BusLocationsModelCopyWith<$R, $In extends BusLocationsModel,
   $R call(
       {String? id,
       String? busId,
-      String? latitude,
-      String? longitude,
+      double? latitude,
+      double? longitude,
       DateTime? timestamp});
   BusLocationsModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
@@ -131,8 +131,8 @@ class _BusLocationsModelCopyWithImpl<$R, $Out>
   $R call(
           {Object? id = $none,
           String? busId,
-          String? latitude,
-          String? longitude,
+          double? latitude,
+          double? longitude,
           Object? timestamp = $none}) =>
       $apply(FieldCopyWithData({
         if (id != $none) #id: id,

@@ -35,5 +35,4 @@ class ErrorCreateReturnTripState extends DriverTripState {
   final String messge;
 
   ErrorCreateReturnTripState({required this.messge});
-}
-
+} 

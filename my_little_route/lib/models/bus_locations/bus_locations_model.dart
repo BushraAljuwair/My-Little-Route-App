@@ -9,8 +9,8 @@ class BusLocationsModel with BusLocationsModelMappable {
   final String? id;
   @MappableField(key: 'bus_id')
   final String busId;
-  final String latitude;
-  final String longitude;
+  final double latitude;
+  final double longitude;
   final DateTime? timestamp;
 
   BusLocationsModel({

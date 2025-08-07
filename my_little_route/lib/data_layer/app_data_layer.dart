@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_little_route/models/bus_locations/bus_locations_model.dart';
 import 'package:my_little_route/models/buses/buses_model.dart';
 import 'package:my_little_route/models/student/students_models.dart';
 import 'package:my_little_route/models/trip/trip_model.dart';
@@ -153,13 +155,12 @@ class AppDataLayer {
     }
   }
 
-  Future<void> sendTripStops({
+  Future<List<TripStopModel>> sendTripStops({
     required List<Map<String, dynamic>> tripStopsList,
   }) async {
     try {
       log("1");
-      await SupabaseConnect.sendTripStops(tripStopsList: tripStopsList);
-      log("2");
+      return await SupabaseConnect.sendTripStops(tripStopsList: tripStopsList);
     } catch (_) {
       log("3");
       rethrow;
@@ -231,6 +232,40 @@ class AppDataLayer {
       return result;
     } on Exception catch (e) {
       throw FormatException(" $e");
+    }
+  }
+
+  Future<BusLocationsModel> updateOrInsertDriverLocation({
+    String? id,
+    required String busId,
+    required double latitude,
+    required double longitude,
+  }) async {
+    log('start updateDriverLocation');
+    try {
+      final result= await SupabaseConnect.updateOrInsertDriverLocation(
+        id: id,
+        busId: busId,
+        latitude: latitude,
+        longitude: longitude,
+      );
+      return result;
+    } catch (e) {
+      log(e.toString());
+
+       rethrow;
+    }
+  }
+
+  Future<void> updateLocationInSupabase(Position position, String busId) async {
+    try {
+      await SupabaseConnect.updateLocationInSupabase(position, busId);
+
+      log(
+        "📍 Location updated to Supabase: (${position.latitude}, ${position.longitude})",
+      );
+    } catch (e) {
+      log("❌ Failed to update location: $e");
     }
   }
 }

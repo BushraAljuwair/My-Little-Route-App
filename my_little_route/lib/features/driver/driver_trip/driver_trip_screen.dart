@@ -199,6 +199,7 @@ class DriverTripScreen extends StatelessWidget {
                 height: context.getHeight() * .4,
                 // decoration: BoxDecoration(color: StyleColor.buttonOrange),
                 child: GoogleMap(
+                  
                   mapType: MapType.normal,
                   initialCameraPosition: CameraPosition(
                     target: LatLng(

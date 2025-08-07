@@ -59,9 +59,8 @@ class LoadingScreen extends StatelessWidget {
           final authState = snapshot.data;
 
           if (authState == null) {
-            return const LoginScreen();
-
-            // return const Center(child: CircularProgressIndicator());
+ 
+            return const Center(child: CircularProgressIndicator());
           }
 
           final session = authState.session;

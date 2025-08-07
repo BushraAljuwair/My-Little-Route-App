@@ -6,12 +6,13 @@ import 'package:meta/meta.dart';
 import 'package:my_little_route/features/driver/driver_trip/driver_home_screen.dart';
 import 'package:my_little_route/features/driver/driver_trip/driver_trip_screen.dart';
 import 'package:my_little_route/features/driver/driver_profile/driver_profile_screen.dart';
+import 'package:my_little_route/features/driver/trip_navigtion/driver_home_screen.dart';
 
 part 'nav_event.dart';
 part 'nav_state.dart';
 
 class NavBloc extends Bloc<NavEvent, NavState> {
-  List<Widget> screens = [DriverHomeScreen(), DriverProfileScreen()];
+  List<Widget> screens = [DriverHomeScreen1(), DriverProfileScreen()];
   int currenIndex = 0;
   NavBloc() : super(NavInitial()) {
     on<ChangeScreenDriverEvent>(changeScreenMethod);

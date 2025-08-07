@@ -34,8 +34,8 @@ class MainApp extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       theme: CustomTheme.lightTheme,
-      // home:const LoadingScreen(),
-      home: const DriverNavScreen(),
+      home:const LoadingScreen(),
+      // home: const DriverNavScreen(),
     );
   }
 }

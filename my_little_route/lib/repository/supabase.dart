@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:my_little_route/features/kindergarten/add_admin/bloc/add_admin_bloc.dart';
+import 'package:my_little_route/models/bus_locations/bus_locations_model.dart';
 import 'package:my_little_route/models/buses/buses_model.dart';
 import 'package:my_little_route/models/student/students_models.dart';
 import 'package:my_little_route/models/trip/trip_model.dart';
@@ -315,14 +316,21 @@ class SupabaseConnect {
     }
   }
 
-  static Future<void> sendTripStops({
+  static Future<List<TripStopModel>> sendTripStops({
     required List<Map<String, dynamic>> tripStopsList,
   }) async {
     try {
       log("aaaaaaaaaaaaaaaaaaaa");
-      await supabase!.from('trip_stops').insert(tripStopsList).select();
+      final result = await supabase!
+          .from('trip_stops')
+          .insert(tripStopsList)
+          .select();
 
+      List<TripStopModel> stops = result
+          .map((stop) => TripStopModelMapper.fromMap(stop))
+          .toList();
       log("n nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+      return stops;
     } on Exception catch (e) {
       throw FormatException("خطأ في إدخال trip_stops: $e");
     }
@@ -434,5 +442,83 @@ class SupabaseConnect {
     } on Exception catch (e) {
       throw FormatException("error in get studentsTrip  $e");
     }
+  }
+
+  static Future<BusLocationsModel> updateOrInsertDriverLocation({
+    String? id,
+    required String busId,
+    required double latitude,
+    required double longitude,
+  }) async {
+    log('start updateDriverLocation');
+
+    try {
+      if (id == null) {
+        var response = await supabase!
+            .from('bus_locations')
+            .insert({
+              "bus_id": busId,
+              "latitude": latitude,
+              "longitude": longitude,
+              "timestamp": DateTime.now().toIso8601String(),
+            })
+            .select()
+            .single();
+        log('end updateDriverLocation');
+        log(response.toString());
+        return BusLocationsModelMapper.fromMap(response);
+      } else {
+        var response = await supabase!
+            .from('bus_locations')
+            .update({
+              "latitude": latitude,
+              "longitude": longitude,
+              "timestamp": DateTime.now().toIso8601String(),
+            })
+            .eq("id", id)
+            .select()
+            .single();
+
+        log('end updateDriverLocation');
+        log(response.toString());
+        return BusLocationsModelMapper.fromMap(response);
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  static Future<void> updateLocationInSupabase(
+    Position position,
+    String busId,
+  ) async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      await supabase.from('bus_locations').insert({
+        'bus_id': busId,
+        'latitude': position.latitude,
+        'longitude': position.longitude,
+      });
+
+      log(
+        "📍 Location updated to Supabase: (${position.latitude}, ${position.longitude})",
+      );
+    } catch (e) {
+      log("❌ Failed to update location: $e");
+    }
+  }
+
+  Stream<List<BusLocationsModel>> listenToBusLocation(String busId) {
+    final supabase = Supabase.instance.client;
+
+    return supabase
+        .from('bus_locations')
+        .stream(primaryKey: ['bus_id'])
+        .eq('bus_id', busId)
+        .map(
+          (maps) =>
+              maps.map((map) => BusLocationsModelMapper.fromMap(map)).toList(),
+        );
   }
 }

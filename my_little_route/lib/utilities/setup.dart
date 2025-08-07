@@ -28,4 +28,7 @@ Future<void> setUp() async {
   GetIt.I.registerSingletonAsync<AppDataLayer>(() async => AppDataLayer());
   final sharedPrefs= await SharedPreferences.getInstance();
   GetIt.I.registerSingleton<SharedPreferences>(sharedPrefs);
+
+
+  await GetIt.I.allReady();
 }
