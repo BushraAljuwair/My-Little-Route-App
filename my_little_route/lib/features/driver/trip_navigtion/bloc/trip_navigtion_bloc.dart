@@ -53,7 +53,7 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
 
   TripNavigtionBloc() : super(TripNavigtionInitial()) {
     _loadCustomMarkers();
-    sharedPrefs.remove("trip_id");
+    //  sharedPrefs.remove("trip_id");
     // sharedPrefs.remove("return_trip_id");
     // sharedPrefs.clear();
     on<TripNavigtionEvent>((event, emit) {});
@@ -276,39 +276,15 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
           tripStudentsList: tripStudentsList,
         );
         log("Trip students sent successfully.");
+
+        await notificationMethod(message: "driverlefthouse");
+        log("Calling notification method...");
       }
 
-      //------------------------------------------------------------------------------
-
-      // List<NotificationsModel> parentNotifcation = students!.map((student) {
-      //   return NotificationsModel(
-      //     message:  "driverlefthouse",
-      //     userId: student.parentId,
-      //     isRead: false,
-      //     createdAt: DateTime.now(),
-      //   );
-      // }).toList();
-      // log(
-      //   "Finished mapping. Notification list count: ${parentNotifcation.length}",
-      // );
-
-      // for (var element in parentNotifcation) {
-      //   log("Notification element: ${element.toString()}");
-      // }
-
-      // log("Calling appGetit.notification...");
-      // await appGetit.notification(notifcation: parentNotifcation);
-      // log("appGetit.notification finished successfully.");
-      // log("end notifcation bloc");
-
-      //--------------------------------------------------------------------------------------------------------------------
-
       emit(SucssesPickUpState());
-      // if (event.isPickUp) {
-      //   add(NotificationEvent(message: "driverlefthouse"));
-      // }
+
       // await notificationMethod(message: "driverlefthouse");
-      //    log("Calling notification method...");
+      // log("Calling notification method...");
       // if (students != null && students!.isNotEmpty) {
       //   await notificationMethod(message: "driverlefthouse");
       //   log("Notification method finished.");
@@ -579,10 +555,12 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
       await appGetit.changeTripTypeCompleted(id: trip!.id!);
       if (event.tripType == "pickup") {
         await appGetit.changeDropOffStatus(studentsTrip: studentsTrip!);
-        add(NotificationEvent(message: "childrenarrivedkindergarten."));
+        notificationMethod(message: "childrenarrivedkindergarten.");
+        sharedPrefs.remove("trip_id");
+      } else {
+        // notificationMethod(message: "childrenleftkindergarten");
+        sharedPrefs.remove("return_trip_id");
       }
-      sharedPrefs.remove("trip_id");
-      sharedPrefs.remove("return_trip_id");
 
       emit(SucssesState());
     } on Exception catch (e) {
@@ -742,9 +720,13 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
           tripStudentsList: tripStudentsList,
         );
         log("Trip students sent successfully.");
+        await notificationMethod(message: "driverlefthouse");
+        log("Calling notification method...");
       }
       emit(SucssesState());
+
       notificationMethod(message: "childrenleftkindergarten");
+
       // add(NotificationEvent(message: "childrenleftkindergarten"));
       add(UpdateMapDataEvent());
     } catch (e) {
