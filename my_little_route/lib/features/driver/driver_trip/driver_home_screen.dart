@@ -46,12 +46,10 @@ class DriverHomeScreen extends StatelessWidget {
                         iconColor: StyleColor.buttonOrange,
                         tripTitle: "MorningTrip1",
                         onTap: () {
-                          // if(bloc.sharedPrefs.getString("trip_id")==null) {
+                          
                             log("1234567890-0987654321");
                             bloc.add(CreateTripEvent());
-                          // }else{
-                          //   bloc.add(GetTripEvent());
-                          // }
+                           
                           Navigator.push(
                             context,
                             MaterialPageRoute(

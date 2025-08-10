@@ -11,6 +11,7 @@ import 'package:my_little_route/data_layer/app_data_layer.dart';
 import 'package:my_little_route/data_layer/auth_service_layer.dart';
 import 'package:my_little_route/models/bus_locations/bus_locations_model.dart';
 import 'package:my_little_route/models/buses/buses_model.dart';
+import 'package:my_little_route/models/notifications/notifications_model.dart';
 import 'package:my_little_route/models/student/students_models.dart';
 import 'package:my_little_route/models/trip/trip_model.dart';
 import 'package:my_little_route/models/trip_stop/trip_stop_model.dart';
@@ -41,6 +42,7 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
   BusLocationsModel? driverLiveLocation;
   Set<Polyline> mapPolylines = {};
   Set<Marker> mapMarkers = {};
+  LatLng kindergartenLittleRoute = LatLng(24.5412682270113, 46.6648522263772);
   GoogleMapController? mapController;
   BitmapDescriptor? busIcon;
   BitmapDescriptor? maleChildMarkerIcon;
@@ -50,12 +52,19 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
   BitmapDescriptor? schooldMarkerIcon;
 
   TripNavigtionBloc() : super(TripNavigtionInitial()) {
-     _loadCustomMarkers();
+    _loadCustomMarkers();
+    sharedPrefs.remove("trip_id");
+    // sharedPrefs.remove("return_trip_id");
     // sharedPrefs.clear();
     on<TripNavigtionEvent>((event, emit) {});
     on<GetDriverAndStudentsEvent>(getDriverAndStudentsMethod);
     on<CreatePickUpEvent>(createPickUpMethod);
     on<UpdateMapDataEvent>(updateMapDataMethod);
+    on<UpdateStudentStatusEvent>(updateStudentStatusMethod);
+    on<EndTripEvent>(endTripMethod);
+    // on<NotificationEvent>(notificationMethod);
+    on<ReturnEvent>(createReturnMethod);
+    on<SendNextStudentNotificationEvent>(sendNextStudentNotificationMethod);
   }
 
   FutureOr<void> getDriverAndStudentsMethod(
@@ -112,7 +121,7 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
           final String? driverLocationId = sharedPrefs.getString(
             "driverLiveLocationID",
           );
-
+          log("driverLocationId $driverLocationId");
           if (driverLocationId == null || driverLocationId.isEmpty) {
             driverLiveLocation = await appGetit.updateOrInsertDriverLocation(
               busId: bus!.id!,
@@ -212,11 +221,11 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
         tripId ??
             "sdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       );
-      if (tripId!=null  ) {
+      if (tripId != null) {
         log("-----------------------------------2----------------------;");
         trip = await appGetit.getTrip(tripId: tripId);
         tripStops = await appGetit.getTripStops(tripId: tripId);
-        studentsTrip=await appGetit.getStudentsTrip(tripId:tripId );
+        studentsTrip = await appGetit.getStudentsTrip(tripId: tripId);
       } else {
         trip = await appGetit.createTrip(
           newTrip: TripModel(
@@ -268,7 +277,45 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
         );
         log("Trip students sent successfully.");
       }
+
+      //------------------------------------------------------------------------------
+
+      // List<NotificationsModel> parentNotifcation = students!.map((student) {
+      //   return NotificationsModel(
+      //     message:  "driverlefthouse",
+      //     userId: student.parentId,
+      //     isRead: false,
+      //     createdAt: DateTime.now(),
+      //   );
+      // }).toList();
+      // log(
+      //   "Finished mapping. Notification list count: ${parentNotifcation.length}",
+      // );
+
+      // for (var element in parentNotifcation) {
+      //   log("Notification element: ${element.toString()}");
+      // }
+
+      // log("Calling appGetit.notification...");
+      // await appGetit.notification(notifcation: parentNotifcation);
+      // log("appGetit.notification finished successfully.");
+      // log("end notifcation bloc");
+
+      //--------------------------------------------------------------------------------------------------------------------
+
       emit(SucssesPickUpState());
+      // if (event.isPickUp) {
+      //   add(NotificationEvent(message: "driverlefthouse"));
+      // }
+      // await notificationMethod(message: "driverlefthouse");
+      //    log("Calling notification method...");
+      // if (students != null && students!.isNotEmpty) {
+      //   await notificationMethod(message: "driverlefthouse");
+      //   log("Notification method finished.");
+      // } else {
+      //   log("Students list is empty, skipping notification.");
+      // }
+
       add(UpdateMapDataEvent());
     } catch (e) {
       log("Error creating trip: $e");
@@ -324,6 +371,7 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
     UpdateMapDataEvent event,
     Emitter<TripNavigtionState> emit,
   ) {
+    // add(SendNextStudentNotificationEvent());
     List<LatLng> polylinePoints = [];
     mapMarkers.clear();
     mapPolylines.clear();
@@ -357,31 +405,96 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
         LatLng(appGetit.user!.latitude!, appGetit.user!.longitude!),
       );
     }
+    if (trip!.tripType == "pickup") {
+      final studentsNotPickedUp = studentsTrip!
+          .where((tripStudent) => tripStudent.pickupStatus == false)
+          .toList();
+      final tripStopsNotPickedUp = studentsNotPickedUp
+          .map(
+            (tripStudent) => tripStops!.firstWhere(
+              (stop) => stop.studentId == tripStudent.studentId,
+            ),
+          )
+          .toList();
 
-    for (var stpos in tripStops!) {
-      log("stpos ${stpos.toString()}");
-      StudentsModel student = students!.firstWhere(
-        (student) => student.id == stpos.studentId,
-      );
-      mapMarkers.add(
-        Marker(
-          markerId: MarkerId(stpos.studentId),
-          position: LatLng(stpos.latitude, stpos.longitude!),
-          icon: student.gender == "Female"
-              ? femaleChildMarkerIcon!
-              : maleChildMarkerIcon!,
-        ),
-      );
-      polylinePoints.add(LatLng(stpos.latitude, stpos.longitude!));
+      for (var stpos in tripStopsNotPickedUp) {
+        polylinePoints.add(LatLng(stpos.latitude, stpos.longitude!));
+      }
+
+      for (var stpos in tripStops!) {
+        StudentsModel student = students!.firstWhere(
+          (student) => student.id == stpos.studentId,
+        );
+
+        var studentTrip = studentsTrip!.firstWhere(
+          (tripStudent) => tripStudent.studentId == stpos.studentId,
+        );
+
+        bool isPickedUp = studentTrip.pickupStatus;
+
+        mapMarkers.add(
+          Marker(
+            markerId: MarkerId(stpos.studentId),
+            position: LatLng(stpos.latitude, stpos.longitude!),
+            icon: isPickedUp
+                ? pickedUpChildMarkerIcon!
+                : (student.gender == "Female"
+                      ? femaleChildMarkerIcon!
+                      : maleChildMarkerIcon!),
+          ),
+        );
+      }
+    } else {
+      final studentsNotDroppedOff = studentsTrip!
+          .where((tripStudent) => tripStudent.dropoffStatus == false)
+          .toList();
+      final tripStopssNotDroppedOff = studentsNotDroppedOff
+          .map(
+            (tripStudent) => tripStops!.firstWhere(
+              (stop) => stop.studentId == tripStudent.studentId,
+            ),
+          )
+          .toList();
+
+      for (var stpos in tripStopssNotDroppedOff) {
+        polylinePoints.add(LatLng(stpos.latitude, stpos.longitude!));
+      }
+
+      for (var stpos in tripStops!) {
+        StudentsModel student = students!.firstWhere(
+          (student) => student.id == stpos.studentId,
+        );
+
+        var studentTrip = studentsTrip!.firstWhere(
+          (tripStudent) => tripStudent.studentId == stpos.studentId,
+        );
+
+        bool isPickedUp = studentTrip.pickupStatus;
+
+        mapMarkers.add(
+          Marker(
+            markerId: MarkerId(stpos.studentId),
+            position: LatLng(stpos.latitude, stpos.longitude!),
+            icon: isPickedUp
+                ? pickedUpChildMarkerIcon!
+                : (student.gender == "Female"
+                      ? femaleChildMarkerIcon!
+                      : maleChildMarkerIcon!),
+          ),
+        );
+      }
     }
 
     mapMarkers.add(
       Marker(
-        markerId: MarkerId("my little route "),
+        markerId: MarkerId("Kindergarten My little Route"),
+        infoWindow: InfoWindow(title: "Kindergarten My little Route "),
         icon: schooldMarkerIcon!,
-        position: LatLng(24.5412682270113, 46.6648522263772),
+        position: kindergartenLittleRoute,
       ),
     );
+    polylinePoints.add(kindergartenLittleRoute);
+
     if (polylinePoints.length > 1) {
       mapPolylines.add(
         Polyline(
@@ -392,6 +505,281 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
         ),
       );
     }
+
     emit(MapDataReadyState());
+  }
+
+  FutureOr<void> updateStudentStatusMethod(
+    UpdateStudentStatusEvent event,
+    Emitter<TripNavigtionState> emit,
+  ) async {
+    try {
+      if (event.tripType == 'pickup') {
+        log("pickup");
+        var updatedStudentTrip = await appGetit.updateStudentPickupStatus(
+          studentTrip: TripStudentsModel(
+            tripId: event.tripStudent.tripId,
+            studentId: event.student.id!,
+            pickupStatus: event.newStatus,
+            pickupTime: DateTime.now(),
+            dropoffStatus: false,
+          ),
+        );
+
+        final index = studentsTrip!.indexWhere(
+          (tripStudent) =>
+              tripStudent.tripId == updatedStudentTrip.tripId &&
+              tripStudent.studentId == updatedStudentTrip.studentId,
+        );
+
+        if (index != -1) {
+          final updatedList = List<TripStudentsModel>.from(studentsTrip!);
+          updatedList[index] = updatedStudentTrip;
+          studentsTrip = updatedList;
+        }
+      } else {
+        log("drop off");
+        var updatedStudentTrip = await appGetit.updateStudentDropOffStatus(
+          studentTrip: TripStudentsModel(
+            tripId: event.tripStudent.tripId,
+            studentId: event.student.id!,
+            dropoffStatus: event.newStatus,
+            dropoffTime: DateTime.now(),
+            pickupStatus: event.tripStudent.pickupStatus,
+          ),
+        );
+
+        final index = studentsTrip!.indexWhere(
+          (tripStudent) =>
+              tripStudent.tripId == updatedStudentTrip.tripId &&
+              tripStudent.studentId == updatedStudentTrip.studentId,
+        );
+
+        if (index != -1) {
+          final updatedList = List<TripStudentsModel>.from(studentsTrip!);
+          updatedList[index] = updatedStudentTrip;
+          studentsTrip = updatedList;
+        }
+      }
+
+      emit(SucssesState());
+      add(UpdateMapDataEvent());
+    } catch (e) {
+      emit(ErrorUpdateStudentStatusState(messge: e.toString()));
+    }
+  }
+
+  FutureOr<void> endTripMethod(
+    EndTripEvent event,
+    Emitter<TripNavigtionState> emit,
+  ) async {
+    try {
+      log("end trip");
+
+      await appGetit.changeTripTypeCompleted(id: trip!.id!);
+      if (event.tripType == "pickup") {
+        await appGetit.changeDropOffStatus(studentsTrip: studentsTrip!);
+        add(NotificationEvent(message: "childrenarrivedkindergarten."));
+      }
+      sharedPrefs.remove("trip_id");
+      sharedPrefs.remove("return_trip_id");
+
+      emit(SucssesState());
+    } on Exception catch (e) {
+      emit(ErrorState(messge: e.toString()));
+    }
+  }
+
+  // FutureOr<void> notificationMethod(
+  //   NotificationEvent event,
+  //   Emitter<TripNavigtionState> emit,
+  // ) async {
+  //   try {
+  //     log("--------------------------------------------1");
+  //     List<NotificationsModel> parentNotifcation = students!.map((student) {
+  //       return NotificationsModel(
+  //         message: event.message,
+  //         userId: student.parentId,
+  //         isRead: false,
+  //         createdAt: DateTime.now(),
+  //       );
+  //     }).toList();
+
+  //     log("--------------------------------------------2");
+
+  //     await appGetit.notification(notifcation: parentNotifcation);
+  //     log("--------------------------------------------3");
+
+  //     emit(SucssesState());
+  //   } catch (e) {
+  //     emit(ErrorState(messge: e.toString()));
+  //   }
+  // }
+
+  // Future<void> notificationMethod({required String message}) async {
+  //   log("start notifcation  bloc");
+  //   try {
+  //     List<NotificationsModel> parentNotifcation = students!.map((student) {
+  //       return NotificationsModel(
+  //         message: message,
+  //         userId: student.parentId,
+  //         isRead: false,
+  //         // createdAt: DateTime.now(),
+  //          createdAt: DateTime.now(),
+  //       );
+  //     }).toList();
+  //     for (var element in parentNotifcation) {
+  //       log("element is ${element.toString()}");
+  //     }
+  //     await appGetit.notification(notifcation: parentNotifcation);
+  //     log("end notifcation  bloc");
+  //   return;
+  //   } catch (e) {
+  //     log("error  notifcation  bloc ${e.toString()}");
+  //   }
+  // }
+  Future<void> notificationMethod({required String message}) async {
+    log("start notifcation bloc");
+    try {
+      // **النقطة المعدلة:** إضافة log قبل عملية الـ map
+      log("Mapping students to notifications...");
+      if (students == null) {
+        log("Error: Students list is null, cannot send notification.");
+        return;
+      }
+      List<NotificationsModel> parentNotifcation = students!.map((student) {
+        return NotificationsModel(
+          message: message,
+          userId: student.parentId,
+          isRead: false,
+          createdAt: DateTime.now(),
+        );
+      }).toList();
+      log(
+        "Finished mapping. Notification list count: ${parentNotifcation.length}",
+      );
+
+      for (var element in parentNotifcation) {
+        log("Notification element: ${element.toString()}");
+      }
+
+      log("Calling appGetit.notification...");
+      await appGetit.notification(notifcation: parentNotifcation);
+      log("appGetit.notification finished successfully.");
+      log("end notifcation bloc");
+    } catch (e) {
+      log("error notifcation bloc: ${e.toString()}");
+    }
+  }
+
+  FutureOr<void> createReturnMethod(
+    ReturnEvent event,
+    Emitter<TripNavigtionState> emit,
+  ) async {
+    try {
+      log("createReturnMethodstart");
+      emit(LoadingState());
+      final String? tripId = sharedPrefs.getString("return_trip_id");
+      log(
+        tripId ??
+            "sdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      );
+      if (tripId != null) {
+        log("tripId != null");
+
+        log("-----------------------------------2----------------------;");
+        trip = await appGetit.getTrip(tripId: tripId);
+        tripStops = await appGetit.getTripStops(tripId: tripId);
+        studentsTrip = await appGetit.getStudentsTrip(tripId: tripId);
+      } else {
+        log("tripId  null");
+        trip = await appGetit.createTrip(
+          newTrip: TripModel(
+            busId: bus!.id!,
+            driverId: appGetit.user!.id!,
+            tripType: 'dropoff',
+            scheduledTime: DateTime.now(),
+            status: 'started',
+          ),
+        );
+        log("-----------------------------------1----------------------;");
+        log(trip.toString());
+        sharedPrefs.setString("return_trip_id", trip!.id!);
+        log("New trip created with ID: ${trip!.id!}");
+
+        final tripStopsList = students!.asMap().entries.map((entry) {
+          final index = entry.key;
+          final student = entry.value;
+          final stope = TripStopModel(
+            tripId: trip!.id!,
+            studentId: student.id!,
+            stopOrder: index + 1,
+            latitude: student.latitude!,
+            longitude: student.longitude!,
+            stopType: 'dropoff_point',
+            addressDescription: null,
+          ).toMap();
+          stope.remove('id');
+          return stope;
+        }).toList();
+        tripStops = await appGetit.sendTripStops(tripStopsList: tripStopsList);
+        log("Trip stops sent successfully createReturnMethod.");
+
+        final tripStudentsList = students!.map((student) {
+          final studentTrip = TripStudentsModel(
+            tripId: trip!.id!,
+            studentId: student.id!,
+            pickupStatus: true,
+            dropoffStatus: false,
+            pickupTime: DateTime.now(),
+            dropoffTime: null,
+          ).toMap();
+          studentTrip.remove('id');
+          return studentTrip;
+        }).toList();
+
+        studentsTrip = await appGetit.sendStudentsTrip(
+          tripStudentsList: tripStudentsList,
+        );
+        log("Trip students sent successfully.");
+      }
+      emit(SucssesState());
+      notificationMethod(message: "childrenleftkindergarten");
+      // add(NotificationEvent(message: "childrenleftkindergarten"));
+      add(UpdateMapDataEvent());
+    } catch (e) {
+      log("Error creating trip: $e");
+      emit(ErrorPickUpState(messge: " ${e.toString()}"));
+    }
+  }
+
+  FutureOr<void> sendNextStudentNotificationMethod(
+    SendNextStudentNotificationEvent event,
+    Emitter<TripNavigtionState> emit,
+  ) {
+    for (var studentStop in tripStops!) {
+      final currentStudentTrip = studentsTrip!.firstWhere(
+        (student) => studentStop.studentId == student.id,
+      );
+      final student = students!.firstWhere(
+        (student) => student.id == studentStop.id,
+      );
+      if (currentStudentTrip == null) {
+        continue;
+      }
+      if (studentStop.studentId == currentStudentTrip.studentId &&
+          currentStudentTrip.pickupStatus == false &&
+          studentStop.tripId == currentStudentTrip.tripId) {
+        appGetit.notificationParent(
+          notifcation: NotificationsModel(
+            userId: student.parentId,
+            isRead: false,
+            message: "driverwayhome",
+            createdAt: DateTime.now(),
+          ),
+        );
+        break;
+      }
+    }
   }
 }

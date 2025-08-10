@@ -1,9 +1,11 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_little_route/models/bus_locations/bus_locations_model.dart';
 import 'package:my_little_route/models/buses/buses_model.dart';
+import 'package:my_little_route/models/notifications/notifications_model.dart';
 import 'package:my_little_route/models/student/students_models.dart';
 import 'package:my_little_route/models/trip/trip_model.dart';
 import 'package:my_little_route/models/trip_stop/trip_stop_model.dart';
@@ -243,7 +245,7 @@ class AppDataLayer {
   }) async {
     log('start updateDriverLocation');
     try {
-      final result= await SupabaseConnect.updateOrInsertDriverLocation(
+      final result = await SupabaseConnect.updateOrInsertDriverLocation(
         id: id,
         busId: busId,
         latitude: latitude,
@@ -253,7 +255,7 @@ class AppDataLayer {
     } catch (e) {
       log(e.toString());
 
-       rethrow;
+      rethrow;
     }
   }
 
@@ -266,6 +268,100 @@ class AppDataLayer {
       );
     } catch (e) {
       log("❌ Failed to update location: $e");
+    }
+  }
+
+  Future<void> changeDropOffStatus({
+    required List<TripStudentsModel> studentsTrip,
+  }) async {
+    log("🏁 endPickupTrip: app data layer start ");
+
+    try {
+      await SupabaseConnect.changeDropOffStatus(studentsTrip: studentsTrip);
+
+      log("🏁 endPickupTrip: app data layer end ");
+    } catch (e) {
+      log("🏁 endPickupTrip: app data layer start $e");
+
+      rethrow;
+    }
+  }
+
+  Future<void> changeTripTypeCompleted({required String id}) async {
+    log("🏁 endReturnTrip: الدالة بدأت لإنهاء الرحلة ID: $id");
+
+    try {
+      await SupabaseConnect.changeTripTypeCompleted(id: id);
+    } catch (e) {
+      log("❌ endReturnTrip: فشل في تحديث بيانات الرحلة أو الطلاب: $e");
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> notification({
+    required List<NotificationsModel> notifcation,
+  }) async {
+    log("app data layer notification subabase start ");
+    try {
+      await SupabaseConnect.notification(notifcation: notifcation);
+
+      log("app data layer notification subabase end ");
+    } catch (e) {
+      log("notification subabase rethrow ");
+      rethrow;
+    }
+  }
+
+  Future<void> notificationParent({
+    required NotificationsModel notifcation,
+  }) async {
+    log("notificationParent   start ");
+    try {
+      await SupabaseConnect.notificationParent(notifcation: notifcation);
+ 
+      log("notificationParent   end ");
+    } catch (e) {
+      log("notificationParent   throw ");
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> uploadImage({required String path, required File image}) async {
+    log(" app data layer uploadImage subabase start ");
+    try {
+      await SupabaseConnect.uploadImage(image: image, path: path);
+      log(" app data layer  uploadImage subabase end ");
+    } catch (e) {
+      log(" app data layer  uploadImage subabase throw ");
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<String> getPublicImageUrl({required String path}) async {
+    log("getPublicImageUrl subabase start ");
+    try {
+      final result = await SupabaseConnect.getPublicImageUrl(path: path);
+      log("getPublicImageUrl subabase end ");
+      return result;
+    } catch (e) {
+      log("getPublicImageUrl subabase throw ");
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<UserModel> updateUSerProfileImage({
+    required String publicUrl,
+    required String userId,
+  }) async {
+    log("app data layer  updateUSerProfileImage start ");
+    try {
+      return await SupabaseConnect.updateUSerProfileImage(
+        publicUrl: publicUrl,
+        userId: userId,
+      );
+    } catch (e) {
+      log("app data layer  updateUSerProfileImage rethrows ");
+      rethrow;
     }
   }
 }

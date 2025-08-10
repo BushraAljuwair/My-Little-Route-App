@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +44,7 @@ class DriverHomeScreen1 extends StatelessWidget {
                         iconColor: StyleColor.buttonOrange,
                         tripTitle: "MorningTrip1",
                         onTap: () {
-                            bloc.add(CreatePickUpEvent());
+                          bloc.add(CreatePickUpEvent( ));
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -66,7 +64,20 @@ class DriverHomeScreen1 extends StatelessWidget {
                       StyleSize.sizeH16,
                       CustomCard(
                         tripTitle: "ReturnTrip",
-                        onTap: () {},
+                        onTap: () {
+                          bloc.add(ReturnEvent());
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return BlocProvider.value(
+                                  value: bloc,
+                                  child: TripNavigtionScreen(),
+                                );
+                              },
+                            ),
+                          );
+                        },
                         icon: Icons.house,
                         iconColor: StyleColor.lapislazuli,
                         buttonColor: StyleColor.lapislazuli,

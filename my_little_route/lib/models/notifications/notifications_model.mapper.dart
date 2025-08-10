@@ -21,7 +21,8 @@ class NotificationsModelMapper extends ClassMapperBase<NotificationsModel> {
   final String id = 'NotificationsModel';
 
   static String? _$id(NotificationsModel v) => v.id;
-  static const Field<NotificationsModel, String> _f$id = Field('id', _$id);
+  static const Field<NotificationsModel, String> _f$id =
+      Field('id', _$id, opt: true);
   static String _$userId(NotificationsModel v) => v.userId;
   static const Field<NotificationsModel, String> _f$userId =
       Field('userId', _$userId, key: r'user_id');

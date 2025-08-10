@@ -1,11 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:my_little_route/features/auth/login_screen.dart';
-import 'package:my_little_route/features/auth/signup_screen.dart';
-import 'package:my_little_route/features/driver/nav/driver_nav_screen.dart';
 import 'package:my_little_route/features/loading/loading_screen.dart';
 import 'package:my_little_route/style/theme/theme.dart';
-import 'package:my_little_route/tray.dart';
 import 'package:my_little_route/utilities/setup.dart';
 
 void main() async {
@@ -34,7 +30,7 @@ class MainApp extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       theme: CustomTheme.lightTheme,
-      home:const LoadingScreen(),
+      home: const LoadingScreen(),
       // home: const DriverNavScreen(),
     );
   }

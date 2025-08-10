@@ -1,10 +1,12 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_little_route/models/bus_locations/bus_locations_model.dart';
 import 'package:my_little_route/models/buses/buses_model.dart';
+import 'package:my_little_route/models/notifications/notifications_model.dart';
 import 'package:my_little_route/models/student/students_models.dart';
 import 'package:my_little_route/models/trip/trip_model.dart';
 import 'package:my_little_route/models/trip_stop/trip_stop_model.dart';
@@ -294,15 +296,7 @@ class SupabaseConnect {
           .from('trip_students')
           .insert(tripStudentsList)
           .select();
-      log("!11111111111111111111111111111");
-      log("!11111111111111111111111111111");
-      log("!11111111111111111111111111111");
-      for (var element in response) {
-        log(element.toString());
-      }
-      log("!11111111111111111111111111111");
-      log("!11111111111111111111111111111");
-      log("!11111111111111111111111111111");
+
       final studentsTrips = response.map((trips) {
         return TripStudentsModelMapper.fromMap(trips);
       }).toList();
@@ -363,24 +357,49 @@ class SupabaseConnect {
     required TripStudentsModel studentTrip,
   }) async {
     try {
-      log("updateStudentPickupStatus start ");
+      log("updateStudentDropOffStatus start ");
       final result = await supabase!
           .from('trip_students')
           .update({
-            'dropoff_status': studentTrip.pickupStatus,
-            'dropoff_time': studentTrip.pickupTime?.toIso8601String(),
+            // التصحيح: استخدام حالة الإنزال وزمن الإنزال
+            'dropoff_status': studentTrip.dropoffStatus,
+            'dropoff_time': studentTrip.dropoffTime?.toIso8601String(),
           })
           .eq('student_id', studentTrip.studentId)
           .eq('trip_id', studentTrip.tripId)
           .select()
           .single();
-      log("updateStudentPickupStatus end");
+      log("updateStudentDropOffStatus end");
+      log(result.toString());
 
       return TripStudentsModelMapper.fromMap(result);
     } on Exception catch (e) {
       throw FormatException("error in update status $e");
     }
   }
+  // static Future<TripStudentsModel> updateStudentDropOffStatus({
+  //   required TripStudentsModel studentTrip,
+  // }) async {
+  //   try {
+  //     log("updateStudentPickupStatus start ");
+  //     final result = await supabase!
+  //         .from('trip_students')
+  //         .update({
+  //           'dropoff_status': studentTrip.pickupStatus,
+  //           'dropoff_time': studentTrip.pickupTime?.toIso8601String(),
+  //         })
+  //         .eq('student_id', studentTrip.studentId)
+  //         .eq('trip_id', studentTrip.tripId)
+  //         .select()
+  //         .single();
+  //     log("updateStudentDropOffStatus end");
+  //     log(result.toString());
+
+  //     return TripStudentsModelMapper.fromMap(result);
+  //   } on Exception catch (e) {
+  //     throw FormatException("error in update status $e");
+  //   }
+  // }
 
   static Future<TripModel> getTrip({required String tripId}) async {
     try {
@@ -411,9 +430,7 @@ class SupabaseConnect {
       final tripStops = result.map((stop) {
         return TripStopModelMapper.fromMap(stop);
       }).toList();
-      for (var element in tripStops) {
-        log(element.toString());
-      }
+
       log(" end");
       return tripStops;
     } on Exception catch (e) {
@@ -434,9 +451,7 @@ class SupabaseConnect {
       final studentsTrip = result.map((stop) {
         return TripStudentsModelMapper.fromMap(stop);
       }).toList();
-      for (var element in studentsTrip) {
-        log(element.toString());
-      }
+
       log("getStudentsTrip  end");
       return studentsTrip;
     } on Exception catch (e) {
@@ -465,7 +480,6 @@ class SupabaseConnect {
             .select()
             .single();
         log('end updateDriverLocation');
-        log(response.toString());
         return BusLocationsModelMapper.fromMap(response);
       } else {
         var response = await supabase!
@@ -480,7 +494,6 @@ class SupabaseConnect {
             .single();
 
         log('end updateDriverLocation');
-        log(response.toString());
         return BusLocationsModelMapper.fromMap(response);
       }
     } catch (e) {
@@ -520,5 +533,229 @@ class SupabaseConnect {
           (maps) =>
               maps.map((map) => BusLocationsModelMapper.fromMap(map)).toList(),
         );
+  }
+
+  static Future<void> changeDropOffStatus({
+    required List<TripStudentsModel> studentsTrip,
+  }) async {
+    try {
+      for (var element in studentsTrip) {
+        log(
+          "🔍 endPickupTrip: فحص الطالب ID: ${element.studentId}، حالة الالتقاط: ${element.pickupStatus}",
+        );
+        if (element.pickupStatus) {
+          await supabase!
+              .from('trip_students')
+              .update({
+                'dropoff_status': true,
+                "dropoff_time": DateTime.now().toIso8601String(),
+              })
+              .eq("trip_id", element.tripId)
+              .eq("student_id", element.studentId);
+        }
+      }
+      log("🎉 endPickupTrip: جميع الطلاب تم فحصهم بنجاح.");
+    } catch (e) {
+      log("❌ endPickupTrip: فشل في تحديث بيانات الرحلة أو الطلاب: $e");
+      throw Exception(e.toString());
+    }
+  }
+
+  static Future<void> changeTripTypeCompleted({required String id}) async {
+    log("🏁 endReturnTrip: الدالة بدأت لإنهاء الرحلة ID: $id");
+
+    try {
+      await supabase!
+          .from('trips')
+          .update({'status': "completed"})
+          .eq("id", id);
+    } catch (e) {
+      log("❌ endReturnTrip: فشل في تحديث بيانات الرحلة أو الطلاب: $e");
+      throw Exception(e.toString());
+    }
+  }
+
+  // static Future<void> notification({
+  //   required List<NotificationsModel> notifcation,
+  // }) async {
+  //   log("notification subabase start ");
+  //   try {
+  //     final List<Map<String, dynamic>> notficationsToInsert = notifcation.map((
+  //       element,
+  //     ) {
+  //       final notificationMap = element.toMap();
+  //       notificationMap.remove("id");
+  //       return notificationMap;
+  //     }).toList();
+
+  //     await supabase!.from("notifications").insert(notficationsToInsert);
+
+  //     log("notification subabase end ");
+  //   } catch (e) {
+  //     log("notification subabase throw ");
+  //     throw Exception(e.toString());
+  //   }
+  // }
+
+  // static Future<void> notification({
+  //   required List<NotificationsModel> notifcation,
+  // }) async {
+    
+  //   log("notification subabase start 22222");
+  //   try {
+  //     for (var element in notifcation) {
+  //       final notifcationMap = element.toMap();
+  //       // notifcationMap.remove("id");
+  //       final result = await supabase!
+  //           .from("notifications")
+  //           .insert(notifcationMap)
+  //           .select();
+  //       for (var element in result) {
+  //         log("notification message ${element.toString()}");
+  //       }
+  //     }
+
+  //     log("notification subabase end ");
+  //   } catch (e) {
+  //     log("notification subabase throw ");
+  //     throw Exception(e.toString());
+  //   }
+  // }
+
+// static Future<void> notification({
+//   required List<NotificationsModel> notifcation,
+// }) async {
+//   log("notification subabase start");
+//   try {
+//     if (notifcation.isEmpty) {
+//       log("notifications list is empty. No data to insert.");
+//       return;
+//     }
+
+//     final List<Map<String, dynamic>> notificationsToInsert =
+//         notifcation.map((element) {
+//       final notificationMap = element.toMap();
+//       notificationMap.remove('id');
+//       return notificationMap;
+//     }).toList();
+    
+//     // عملية الإدراج الجماعي.
+//     final result = await supabase!
+//         .from("notifications")
+//         .insert(notificationsToInsert)
+//         .select();
+//         for (var element in result) {
+//           log("notifcations ${element.toString()}");
+//         }
+
+//     log("notification subabase end. Inserted ${result.length} records.");
+//   } catch (e) {
+//     log("notification subabase throw, an error occurred.");
+//     // ✅ هنا قمنا بتحسين log ليعرض تفاصيل الخطأ بدقة.
+//     log("Error details: ${e.toString()}");
+//     throw Exception("notification subabase throw: ${e.toString()}");
+//   }
+// }
+static Future<void> notification({
+  required List<NotificationsModel> notifcation,
+}) async {
+  log("notification subabase start");
+  try {
+    if (notifcation.isEmpty) {
+      log("notifications list is empty. No data to insert.");
+      return;
+    }
+
+    final List<Map<String, dynamic>> notificationsToInsert =
+        notifcation.map((element) {
+      final notificationMap = element.toMap();
+      notificationMap.remove('id');
+      return notificationMap;
+    }).toList();
+    
+    // استخدام Future.microtask لضمان عدم حظر الخيط الرئيسي
+      
+        final result = await supabase!
+            .from("notifications")
+            .insert(notificationsToInsert)
+            .select();
+        log("notification subabase end. Inserted ${result.length} records.");
+    
+    
+  } catch (e) {
+    log("notification subabase throw, an error occurred.");
+    log("Error details: ${e.toString()}");
+    // ✅ طرح استثناء ليتم التقاطه في الدالة التي قامت بالمناداة
+    throw Exception("notification subabase throw: ${e.toString()}");
+  }
+}
+
+  static Future<void> uploadImage({
+    required String path,
+    required File image,
+  }) async {
+    log("uploadImage subabase start ");
+    try {
+      await supabase!.storage
+          .from('user-profile-image')
+          .upload(path, image, fileOptions: const FileOptions(upsert: true));
+
+      log("uploadImage subabase end ");
+    } catch (e) {
+      log("uploadImage subabase throw ");
+      throw Exception(e.toString());
+    }
+  }
+
+  static Future<String> getPublicImageUrl({required String path}) async {
+    log("getPublicImageUrl subabase start ");
+    try {
+      final result = await supabase!.storage
+          .from('user-profile-image')
+          .getPublicUrl(path);
+
+      log("getPublicImageUrl subabase end ");
+      return result;
+    } catch (e) {
+      log("getPublicImageUrl subabase throw ");
+      throw Exception(e.toString());
+    }
+  }
+
+  static Future<UserModel> updateUSerProfileImage({
+    required String publicUrl,
+    required String userId,
+  }) async {
+    log("getPublicImageUrl subabase start ");
+    try {
+      final user = await supabase!
+          .from('users')
+          .update({'image_url': publicUrl})
+          .eq('id', userId)
+          .select()
+          .single();
+
+      log("getPublicImageUrl subabase end ");
+      return UserModelMapper.fromMap(user);
+    } catch (e) {
+      log("getPublicImageUrl subabase throw ");
+      throw Exception(e.toString());
+    }
+  }
+
+  static Future<void> notificationParent({
+    required NotificationsModel notifcation,
+  }) async {
+    log("notificationParent subabase start ");
+    try {
+      final mapNotifcation = notifcation.toMap();
+      mapNotifcation.remove('id');
+      await supabase!.from("notifications").insert(notifcation);
+
+      log("notificationParent subabase end ");
+    } catch (e) {
+      log("notificationParent subabase throw ");
+      throw Exception(e.toString());
+    }
   }
 }

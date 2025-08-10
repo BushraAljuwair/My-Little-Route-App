@@ -18,7 +18,7 @@ class UpdateStudentStatusEvent extends DriverTripEvent {
   final bool newStatus;
   final StudentsModel student;
   final TripStudentsModel tripStudent;
-   final String tripType;
+  final String tripType;
 
   UpdateStudentStatusEvent({
     required this.newStatus,
@@ -27,9 +27,13 @@ class UpdateStudentStatusEvent extends DriverTripEvent {
     required this.tripType,
   });
 }
+
 final class StartLocationTrackingEvent extends DriverTripEvent {}
+
 final class StopLocationTrackingEvent extends DriverTripEvent {}
-final class _LocationUpdatedInternalEvent extends DriverTripEvent { // حدث داخلي
+
+final class _LocationUpdatedInternalEvent extends DriverTripEvent {
+  // حدث داخلي
   final Position position;
   _LocationUpdatedInternalEvent(this.position);
 }
@@ -39,3 +43,4 @@ class UpdateMapDataEvent extends DriverTripEvent {
 
   UpdateMapDataEvent({this.position});
 }
+

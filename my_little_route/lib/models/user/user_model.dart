@@ -11,6 +11,8 @@ class UserModel with UserModelMappable {
   final String phone;
   final String role;
   final String? id;
+  @MappableField(key: 'image_url')
+  final String? imageUrl;
 
   @MappableField(key: 'created_at')
   final DateTime? createdAt;
@@ -23,6 +25,7 @@ class UserModel with UserModelMappable {
     required this.phone,
     required this.role,
     this.id,
+    this.imageUrl,
     this.createdAt,
     this.latitude,
     this.longitude,

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_little_route/features/driver/driver_trip/bloc/driver_trip_bloc.dart';
 import 'package:my_little_route/style/style_color.dart';
 import 'package:my_little_route/style/style_text.dart';
  class StudentSwitch extends StatelessWidget {

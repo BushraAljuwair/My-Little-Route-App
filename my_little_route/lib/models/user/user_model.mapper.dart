@@ -30,6 +30,9 @@ class UserModelMapper extends ClassMapperBase<UserModel> {
   static const Field<UserModel, String> _f$role = Field('role', _$role);
   static String? _$id(UserModel v) => v.id;
   static const Field<UserModel, String> _f$id = Field('id', _$id, opt: true);
+  static String? _$imageUrl(UserModel v) => v.imageUrl;
+  static const Field<UserModel, String> _f$imageUrl =
+      Field('imageUrl', _$imageUrl, key: r'image_url', opt: true);
   static DateTime? _$createdAt(UserModel v) => v.createdAt;
   static const Field<UserModel, DateTime> _f$createdAt =
       Field('createdAt', _$createdAt, key: r'created_at', opt: true);
@@ -47,6 +50,7 @@ class UserModelMapper extends ClassMapperBase<UserModel> {
     #phone: _f$phone,
     #role: _f$role,
     #id: _f$id,
+    #imageUrl: _f$imageUrl,
     #createdAt: _f$createdAt,
     #latitude: _f$latitude,
     #longitude: _f$longitude,
@@ -59,6 +63,7 @@ class UserModelMapper extends ClassMapperBase<UserModel> {
         phone: data.dec(_f$phone),
         role: data.dec(_f$role),
         id: data.dec(_f$id),
+        imageUrl: data.dec(_f$imageUrl),
         createdAt: data.dec(_f$createdAt),
         latitude: data.dec(_f$latitude),
         longitude: data.dec(_f$longitude));
@@ -121,6 +126,7 @@ abstract class UserModelCopyWith<$R, $In extends UserModel, $Out>
       String? phone,
       String? role,
       String? id,
+      String? imageUrl,
       DateTime? createdAt,
       double? latitude,
       double? longitude});
@@ -142,6 +148,7 @@ class _UserModelCopyWithImpl<$R, $Out>
           String? phone,
           String? role,
           Object? id = $none,
+          Object? imageUrl = $none,
           Object? createdAt = $none,
           Object? latitude = $none,
           Object? longitude = $none}) =>
@@ -151,6 +158,7 @@ class _UserModelCopyWithImpl<$R, $Out>
         if (phone != null) #phone: phone,
         if (role != null) #role: role,
         if (id != $none) #id: id,
+        if (imageUrl != $none) #imageUrl: imageUrl,
         if (createdAt != $none) #createdAt: createdAt,
         if (latitude != $none) #latitude: latitude,
         if (longitude != $none) #longitude: longitude
@@ -162,6 +170,7 @@ class _UserModelCopyWithImpl<$R, $Out>
       phone: data.get(#phone, or: $value.phone),
       role: data.get(#role, or: $value.role),
       id: data.get(#id, or: $value.id),
+      imageUrl: data.get(#imageUrl, or: $value.imageUrl),
       createdAt: data.get(#createdAt, or: $value.createdAt),
       latitude: data.get(#latitude, or: $value.latitude),
       longitude: data.get(#longitude, or: $value.longitude));

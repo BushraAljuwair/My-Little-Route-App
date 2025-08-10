@@ -28,3 +28,22 @@ class ErrorPickUpState extends TripNavigtionState {
 class TripEndedState extends TripNavigtionState {}
 
 class MapDataReadyState extends TripNavigtionState {}
+
+class SucssesState extends TripNavigtionState {}
+
+class ErrorUpdateStudentStatusState extends TripNavigtionState {
+  final String messge;
+
+  ErrorUpdateStudentStatusState({required this.messge});
+}
+
+
+class ErrorState extends TripNavigtionState {
+  final String messge;
+
+  ErrorState({required this.messge});
+}
+class NotificationSentState extends TripNavigtionState {
+  final String message;
+  NotificationSentState({required this.message});
+}

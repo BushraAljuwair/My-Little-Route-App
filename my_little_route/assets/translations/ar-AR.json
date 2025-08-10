@@ -48,5 +48,9 @@
     "StartTrip": "ابدأ رحلتك!",
     "tripbegintracking": "اختر رحلة لبدء التتبع",
     "ReturnTrip": "رحلة العودة",
-    "MorningTrip1": "رحلة الصباح"
+    "MorningTrip1": "رحلة الصباح",
+    "driverlefthouse": "لقد خرج السائق من المنزل الرجاء الاستعداد للذهاب للمدرسة",
+    "childrenleftkindergarten": "غادر الأطفال الروضه. ارجو الانتباه على الهاتف.",
+    "childrenarrivedkindergarten.": "لقد وصل الاطفال الى الروضة",
+    "driverwayhome": "السائق في طريقة الى منزلك ارجو تجهيز طفلك والانتظار بالقرب من الباب"
 }

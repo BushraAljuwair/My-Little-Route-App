@@ -38,7 +38,26 @@ class DriverProfileScreen extends StatelessWidget {
                 if (state is LoadingState) {
                   return Center(child: CircularProgressIndicator());
                 }
-                if (state is SuccessState) {
+                ImageProvider imageProvider;
+
+                // Determine the image to display
+                if (state is ImageUploadedState) {
+                  // Add a unique timestamp to the URL to bust the cache and force a reload
+                  final newImageUrl =
+                      '${state.imageUrl}?v=${DateTime.now().millisecondsSinceEpoch}';
+                  imageProvider = NetworkImage(newImageUrl);
+                } else if (bloc.imageUrl != null) {
+                  // Add a unique timestamp to the URL for the initial load as well
+                  final currentImageUrl =
+                      '${bloc.imageUrl!}?v=${DateTime.now().millisecondsSinceEpoch}';
+                  imageProvider = NetworkImage(currentImageUrl);
+                } else {
+                  // Fallback to the default asset image
+                  imageProvider = const AssetImage(
+                    "assets/image/driver (2).png",
+                  );
+                }
+                if (state is SuccessState||state is UploadingImageState || state is ImageUploadedState) {
                   return SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -105,14 +124,30 @@ class DriverProfileScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                              // Center(
+                              //   child: CircleAvatar(
+                              //     radius: 50,
+                              //     backgroundImage: AssetImage(
+                              //       "assets/image/driver (2).png",
+                              //     ),
+                              //   ),
+                              // ),
                               Center(
-                                child: CircleAvatar(
-                                  radius: 50,
-                                  backgroundImage: AssetImage(
-                                    "assets/image/driver (2).png",
+                                child: InkWell(
+                                  onTap: () {
+                                  // Call the event to pick a new image from the gallery
+                                  bloc.add(GetImageFromGalleryEvent());
+                                },
+                                  child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: imageProvider,
                                   ),
                                 ),
                               ),
+                              
+                              // Show a loading indicator while the image is being uploaded
+                              if (state is UploadingImageState)
+                                const CircularProgressIndicator(),
                               SizedBox(height: 16),
                               Center(
                                 child: Text(

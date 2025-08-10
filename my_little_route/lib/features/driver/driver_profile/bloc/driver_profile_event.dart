@@ -16,3 +16,16 @@ class UpdateMarkerLocationEvent extends DriverProfileEvent {
 class UpdateDriverLocationEvent extends DriverProfileEvent {}
 
 class LogOutEvent extends DriverProfileEvent {}
+
+
+
+
+
+class LoadInitialImageEvent extends DriverProfileEvent {}
+
+class GetImageFromGalleryEvent extends DriverProfileEvent {}
+
+class UploadImageEvent extends DriverProfileEvent {
+  final File image;
+  UploadImageEvent({required this.image});
+}

@@ -5,12 +5,15 @@ sealed class TripNavigtionEvent {}
 
 class GetDriverAndStudentsEvent extends TripNavigtionEvent {}
 
-class CreatePickUpEvent extends TripNavigtionEvent {}
+class CreatePickUpEvent extends TripNavigtionEvent {
+ 
+}
+
 class UpdateStudentStatusEvent extends TripNavigtionEvent {
   final bool newStatus;
   final StudentsModel student;
   final TripStudentsModel tripStudent;
-   final String tripType;
+  final String tripType;
 
   UpdateStudentStatusEvent({
     required this.newStatus,
@@ -24,4 +27,21 @@ class UpdateMapDataEvent extends TripNavigtionEvent {
   final Position? position;
 
   UpdateMapDataEvent({this.position});
+}
+
+class EndTripEvent extends TripNavigtionEvent {
+  final String tripType;
+
+  EndTripEvent({required this.tripType});
+}
+
+class NotificationEvent extends TripNavigtionEvent {
+  final String message;
+
+  NotificationEvent({required this.message});
+}
+
+class ReturnEvent extends TripNavigtionEvent {}
+class SendNextStudentNotificationEvent extends TripNavigtionEvent {
+ 
 }

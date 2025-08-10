@@ -20,11 +20,15 @@ class TripNavigtionScreen extends StatelessWidget {
       body: BlocConsumer<TripNavigtionBloc, TripNavigtionState>(
         listener: (context, state) {},
         builder: (context, state) {
+          if (bloc.driverLiveLocation == null) {
+            return const Center(child: Text("bloc.driverLiveLocation"));
+          }
           if (state is LoadingState) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ErrorGetInfoState || state is ErrorPickUpState) {
             return Center(child: Text("error with get info or pickup "));
           } else if (state is SucssesGetTripState ||
+              state is SucssesState ||
               state is MapDataReadyState) {
             return Column(
               children: [
@@ -86,9 +90,15 @@ class TripNavigtionScreen extends StatelessWidget {
                               log("a");
                               log(studentTripToday.toString());
                               return StudentSwitch(
-                                value: studentTripToday.pickupStatus,
+                                value: bloc.trip!.tripType == "pickup"
+                                    ? studentTripToday.pickupStatus
+                                    : studentTripToday.dropoffStatus,
                                 title: student.name,
                                 onChanged: (newStatus) {
+                                  log("newStatus");
+                                  log("newStatus");
+                                  log("newStatus");
+                                  log("newStatusnewStatusnewStatus $newStatus");
                                   bloc.add(
                                     UpdateStudentStatusEvent(
                                       newStatus: newStatus,
@@ -106,7 +116,9 @@ class TripNavigtionScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(16.0),
                           child: ElevatedButton(
                             onPressed: () {
-                              // bloc.add(EndTripEvent());
+                              bloc.add(
+                                EndTripEvent(tripType: bloc.trip!.tripType!),
+                              );
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(

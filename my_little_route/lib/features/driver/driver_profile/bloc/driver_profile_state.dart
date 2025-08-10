@@ -30,3 +30,20 @@ final class ErrorsignOut extends DriverProfileState {
 
   ErrorsignOut({required this.message});
 }
+
+final class SucssesGetImage extends DriverProfileState {
+  final File imageFile;
+  SucssesGetImage({required this.imageFile});
+}
+
+final class ErrorGetImage extends DriverProfileState {
+  final String message;
+  ErrorGetImage({required this.message});
+}
+
+final class UploadingImageState extends DriverProfileState {}
+
+final class ImageUploadedState extends DriverProfileState {
+  final String imageUrl;
+  ImageUploadedState({required this.imageUrl});
+}

@@ -16,7 +16,7 @@ class NotificationsModel with NotificationsModelMappable {
   final DateTime? createdAt;
 
   NotificationsModel({
-    required this.id,
+      this.id,
     required this.userId,
     required this.isRead,
     required this.message,

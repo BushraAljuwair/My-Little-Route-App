@@ -48,5 +48,9 @@
         "StartTrip": "Start Your Trip!",
         "tripbegintracking": "Choose a trip to begin tracking",
         "ReturnTrip": "Return Trip",
-         "MorningTrip1":"Morning Trip"
+        "MorningTrip1": "Morning Trip",
+        "driverlefthouse": "The driver has left the house. Please get ready to go to school.",
+        "childrenleftkindergarten": "The children have left kindergarten. Please pay attention to your phone.",
+        "childrenarrivedkindergarten.": "The children have arrived at kindergarten.",
+        "driverwayhome":"The driver is on his way to your home. Please get your child ready and wait near the door."
 }
