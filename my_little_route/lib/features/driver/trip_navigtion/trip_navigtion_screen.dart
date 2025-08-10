@@ -47,7 +47,7 @@ class TripNavigtionScreen extends StatelessWidget {
                     ),
                     onMapCreated: (controller) {
                       bloc.mapController = controller;
-                      bloc.add(UpdateMapDataEvent());
+                      // bloc.add(UpdateMapDataEvent());
                     },
                     markers: bloc.mapMarkers,
                     polylines: bloc.mapPolylines,

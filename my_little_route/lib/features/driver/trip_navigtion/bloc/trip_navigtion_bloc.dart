@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
@@ -53,18 +52,17 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
 
   TripNavigtionBloc() : super(TripNavigtionInitial()) {
     _loadCustomMarkers();
-    //  sharedPrefs.remove("trip_id");
-    // sharedPrefs.remove("return_trip_id");
-    // sharedPrefs.clear();
+    sharedPrefs.remove("trip_id");
+    sharedPrefs.remove("return_trip_id");
+    sharedPrefs.remove("driverLiveLocationID");
+    sharedPrefs.clear();
     on<TripNavigtionEvent>((event, emit) {});
     on<GetDriverAndStudentsEvent>(getDriverAndStudentsMethod);
     on<CreatePickUpEvent>(createPickUpMethod);
     on<UpdateMapDataEvent>(updateMapDataMethod);
     on<UpdateStudentStatusEvent>(updateStudentStatusMethod);
     on<EndTripEvent>(endTripMethod);
-    // on<NotificationEvent>(notificationMethod);
     on<ReturnEvent>(createReturnMethod);
-    on<SendNextStudentNotificationEvent>(sendNextStudentNotificationMethod);
   }
 
   FutureOr<void> getDriverAndStudentsMethod(
@@ -109,7 +107,39 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
         id: authServiceLGetit.currentUser!.id,
       );
 
-      if (bus != null && appGetit.user != null) {
+      // if (bus != null && appGetit.user != null) {
+      //   log("Driver and bus data loaded successfully.");
+
+      //   _positionStreamSubscription?.cancel();
+      //   _positionStreamSubscription = startTracking().listen((position) async {
+      //     log(
+      //       "📍 Position update: ${position.latitude}, ${position.longitude}",
+      //     );
+
+      //     final String? driverLocationId = sharedPrefs.getString(
+      //       "driverLiveLocationID",
+      //     );
+      //     log("driverLocationId $driverLocationId");
+      //     if (driverLocationId == null || driverLocationId.isEmpty) {
+      //       driverLiveLocation = await appGetit.updateOrInsertDriverLocation(
+      //         busId: bus!.id!,
+      //         latitude: position.latitude,
+      //         longitude: position.longitude,
+      //       );
+      //       sharedPrefs.setString(
+      //         "driverLiveLocationID",
+      //         (driverLiveLocation!.id!),
+      //       );
+      //     } else {
+      //       driverLiveLocation = await appGetit.updateOrInsertDriverLocation(
+      //         id: driverLocationId,
+      //         busId: bus!.id!,
+      //         latitude: position.latitude,
+      //         longitude: position.longitude,
+      //       );
+      //     }
+      //   });
+       if (bus != null && appGetit.user != null) {
         log("Driver and bus data loaded successfully.");
 
         _positionStreamSubscription?.cancel();
@@ -142,12 +172,14 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
           }
         });
 
-        emit(SucssesGetTripState());
-      }
+      emit(SucssesGetTripState());
+ }
     } catch (e) {
       emit(ErrorGetInfoState(messge: e.toString()));
     }
   }
+ 
+   
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -226,8 +258,8 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
         trip = await appGetit.getTrip(tripId: tripId);
         tripStops = await appGetit.getTripStops(tripId: tripId);
         studentsTrip = await appGetit.getStudentsTrip(tripId: tripId);
-      } else {
-        trip = await appGetit.createTrip(
+       } else {
+         trip = await appGetit.createTrip(
           newTrip: TripModel(
             busId: bus!.id!,
             driverId: appGetit.user!.id!,
@@ -282,15 +314,6 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
       }
 
       emit(SucssesPickUpState());
-
-      // await notificationMethod(message: "driverlefthouse");
-      // log("Calling notification method...");
-      // if (students != null && students!.isNotEmpty) {
-      //   await notificationMethod(message: "driverlefthouse");
-      //   log("Notification method finished.");
-      // } else {
-      //   log("Students list is empty, skipping notification.");
-      // }
 
       add(UpdateMapDataEvent());
     } catch (e) {
@@ -347,7 +370,10 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
     UpdateMapDataEvent event,
     Emitter<TripNavigtionState> emit,
   ) {
-    // add(SendNextStudentNotificationEvent());
+    log("SendNextStudentNotificationEvent   updateStudentStatusMethod");
+    sendNextStudentNotificationMethod();
+    log("SendNextStudentNotificationEvent   updateStudentStatusMethod end");
+
     List<LatLng> polylinePoints = [];
     mapMarkers.clear();
     mapPolylines.clear();
@@ -561,6 +587,7 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
         // notificationMethod(message: "childrenleftkindergarten");
         sharedPrefs.remove("return_trip_id");
       }
+      sharedPrefs.remove("driverLiveLocationID");
 
       emit(SucssesState());
     } on Exception catch (e) {
@@ -568,54 +595,6 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
     }
   }
 
-  // FutureOr<void> notificationMethod(
-  //   NotificationEvent event,
-  //   Emitter<TripNavigtionState> emit,
-  // ) async {
-  //   try {
-  //     log("--------------------------------------------1");
-  //     List<NotificationsModel> parentNotifcation = students!.map((student) {
-  //       return NotificationsModel(
-  //         message: event.message,
-  //         userId: student.parentId,
-  //         isRead: false,
-  //         createdAt: DateTime.now(),
-  //       );
-  //     }).toList();
-
-  //     log("--------------------------------------------2");
-
-  //     await appGetit.notification(notifcation: parentNotifcation);
-  //     log("--------------------------------------------3");
-
-  //     emit(SucssesState());
-  //   } catch (e) {
-  //     emit(ErrorState(messge: e.toString()));
-  //   }
-  // }
-
-  // Future<void> notificationMethod({required String message}) async {
-  //   log("start notifcation  bloc");
-  //   try {
-  //     List<NotificationsModel> parentNotifcation = students!.map((student) {
-  //       return NotificationsModel(
-  //         message: message,
-  //         userId: student.parentId,
-  //         isRead: false,
-  //         // createdAt: DateTime.now(),
-  //          createdAt: DateTime.now(),
-  //       );
-  //     }).toList();
-  //     for (var element in parentNotifcation) {
-  //       log("element is ${element.toString()}");
-  //     }
-  //     await appGetit.notification(notifcation: parentNotifcation);
-  //     log("end notifcation  bloc");
-  //   return;
-  //   } catch (e) {
-  //     log("error  notifcation  bloc ${e.toString()}");
-  //   }
-  // }
   Future<void> notificationMethod({required String message}) async {
     log("start notifcation bloc");
     try {
@@ -669,8 +648,9 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
         trip = await appGetit.getTrip(tripId: tripId);
         tripStops = await appGetit.getTripStops(tripId: tripId);
         studentsTrip = await appGetit.getStudentsTrip(tripId: tripId);
-      } else {
+       } else {
         log("tripId  null");
+ 
         trip = await appGetit.createTrip(
           newTrip: TripModel(
             busId: bus!.id!,
@@ -735,33 +715,97 @@ class TripNavigtionBloc extends Bloc<TripNavigtionEvent, TripNavigtionState> {
     }
   }
 
-  FutureOr<void> sendNextStudentNotificationMethod(
-    SendNextStudentNotificationEvent event,
-    Emitter<TripNavigtionState> emit,
-  ) {
+  Future<void> sendNextStudentNotificationMethod() async {
+    if (tripStops == null || tripStops!.isEmpty) {
+      log("tripStops is null or empty, returning.");
+      return;
+    }
+
+    log("sendNextStudentNotificationMethod start ");
+
+    // استخدام for-in loop للعثور على أول طالب لم يتم استلامه بعد.
     for (var studentStop in tripStops!) {
-      final currentStudentTrip = studentsTrip!.firstWhere(
-        (student) => studentStop.studentId == student.id,
-      );
-      final student = students!.firstWhere(
-        (student) => student.id == studentStop.id,
-      );
+      // حاول العثور على رحلة الطالب المطابقة.
+      // استخدام .firstWhereOrNull لمنع حدوث خطأ إذا لم يتم العثور على StudentTrip.
+      TripStudentsModel? currentStudentTrip;
+
+      for (var studentTrip in studentsTrip!) {
+        if (studentStop.studentId == studentTrip.studentId) {
+          currentStudentTrip = studentTrip;
+          log("currentStudentTrip is ${currentStudentTrip.toJson()}");
+          break;
+        }
+      }
+
       if (currentStudentTrip == null) {
+        log(
+          "Student trip not found for student ID: ${studentStop.studentId}. Skipping.",
+        );
         continue;
       }
-      if (studentStop.studentId == currentStudentTrip.studentId &&
-          currentStudentTrip.pickupStatus == false &&
-          studentStop.tripId == currentStudentTrip.tripId) {
-        appGetit.notificationParent(
-          notifcation: NotificationsModel(
-            userId: student.parentId,
-            isRead: false,
-            message: "driverwayhome",
-            createdAt: DateTime.now(),
-          ),
+
+      StudentsModel? student;
+      for (StudentsModel studentData in students!) {
+        if (studentStop.studentId == studentData.id) {
+          student = studentData;
+          log("student is ${student.toJson()}");
+          break;
+        }
+      }
+
+      if (student == null) {
+        log(
+          "Student details not found for student ID: ${studentStop.studentId}. Skipping.",
         );
-        break;
+        continue;
+      }
+
+      // تحقق من الشروط: الطالب لم يتم استلامه بعد.
+      // الـtripId هو نفس الـtripId الحالي.
+      if (trip?.tripType == "pickup") {
+        if (currentStudentTrip.pickupStatus == false &&
+            studentStop.tripId == currentStudentTrip.tripId &&
+            student.id == currentStudentTrip.studentId) {
+          log(
+            "Found student with pickupStatus = false: ${student.name}. Sending notification.",
+          );
+
+          // استدعاء دالة إرسال الإشعار.
+          await appGetit.notificationParent(
+            notifcation: NotificationsModel(
+              userId: student.parentId,
+              isRead: false,
+              message: "driverwayhome",
+              createdAt: DateTime.now(),
+            ),
+          );
+
+          log("Notification sent. Breaking out of the loop.");
+          break;
+        }
+      } else {
+        if (currentStudentTrip.dropoffStatus == false &&
+            studentStop.tripId == currentStudentTrip.tripId &&
+            student.id == currentStudentTrip.studentId) {
+          log(
+            "Found student with pickupStatus = false: ${student.name}. Sending notification.",
+          );
+
+          // استدعاء دالة إرسال الإشعار.
+          await appGetit.notificationParent(
+            notifcation: NotificationsModel(
+              userId: student.parentId,
+              isRead: false,
+              message: "buscoming",
+              createdAt: DateTime.now(),
+            ),
+          );
+
+          log("Notification sent. Breaking out of the loop.");
+          break;
+        }
       }
     }
+    log(" end");
   }
 }

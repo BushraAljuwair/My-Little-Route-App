@@ -25,6 +25,7 @@ class UpdateStudentStatusEvent extends TripNavigtionEvent {
 
 class UpdateMapDataEvent extends TripNavigtionEvent {
   final Position? position;
+  
 
   UpdateMapDataEvent({this.position});
 }
@@ -35,12 +36,7 @@ class EndTripEvent extends TripNavigtionEvent {
   EndTripEvent({required this.tripType});
 }
 
-class NotificationEvent extends TripNavigtionEvent {
-  final String message;
-
-  NotificationEvent({required this.message});
-}
-
+ 
 class ReturnEvent extends TripNavigtionEvent {}
 class SendNextStudentNotificationEvent extends TripNavigtionEvent {
  

@@ -743,19 +743,49 @@ static Future<void> notification({
     }
   }
 
-  static Future<void> notificationParent({
-    required NotificationsModel notifcation,
-  }) async {
-    log("notificationParent subabase start ");
-    try {
-      final mapNotifcation = notifcation.toMap();
-      mapNotifcation.remove('id');
-      await supabase!.from("notifications").insert(notifcation);
+  // static Future<void> notificationParent({
+  //   required NotificationsModel notifcation,
+  // }) async {
+  //   log("notificationParent subabase start ");
+  //   try {
+  //     final mapNotifcation = notifcation.toMap();
+  //     mapNotifcation.remove('id');
+  //    final result= await supabase!.from("notifications").insert(notifcation).select();
+  //    log("result result result ${result.toSet()}");
 
-      log("notificationParent subabase end ");
-    } catch (e) {
-      log("notificationParent subabase throw ");
-      throw Exception(e.toString());
-    }
+  //     log("notificationParent subabase end ");
+  //   } catch (e) {
+  //     log("notificationParent subabase throw ");
+  //     throw Exception(e.toString());
+  //   }
+  // }
+
+
+  static Future<void> notificationParent({
+  required NotificationsModel notifcation,
+}) async {
+  log("notificationParent subabase start ");
+  try {
+    // 1. تحويل الـ NotificationsModel إلى Map<String, dynamic>.
+    final mapNotifcation = notifcation.toMap();
+    
+    // 2. إزالة حقل 'id' من الـ Map،
+    // لكي يتم إنشاء ID جديد تلقائيًا بواسطة Supabase.
+    mapNotifcation.remove('id');
+
+    // 3. استخدام الـ Map المعدّل في دالة insert.
+    // هذا هو التعديل الأساسي لحل المشكلة.
+    final result = await supabase!.from("notifications").insert(mapNotifcation).select();
+    
+    // طباعة النتيجة للتأكد من نجاح العملية.
+    // إذا كان كل شيء على ما يرام، ستحتوي النتيجة على Map واحد.
+    log("result result result ${result.toSet()}");
+
+    log("notificationParent subabase end ");
+  } catch (e) {
+    log("notificationParent subabase throw ");
+    throw Exception(e.toString());
   }
+}
+
 }
