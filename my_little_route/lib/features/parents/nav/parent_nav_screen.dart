@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_little_route/features/nav/bloc/nav_bloc.dart';
+import 'package:my_little_route/features/parents/nav/bloc/nav_bloc.dart';
 
 class ParentNavScreen extends StatelessWidget {
   const ParentNavScreen({super.key});
@@ -10,11 +10,11 @@ class ParentNavScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => NavBloc(),
+      create: (context) => ParentNavBloc(),
       child: Builder(
         builder: (context) {
-          final bloc = context.read<NavBloc>();
-          return BlocBuilder<NavBloc, NavState>(
+          final bloc = context.read<ParentNavBloc>();
+          return BlocBuilder<ParentNavBloc, NavState>(
             builder: (context, state) {
               return Scaffold(
                 body: bloc.screens[bloc.currenIndex],

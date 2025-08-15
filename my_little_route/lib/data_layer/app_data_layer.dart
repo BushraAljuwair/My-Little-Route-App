@@ -70,15 +70,14 @@ class AppDataLayer {
     return drivers;
   }
 
-  Future<void> updateUserInfo({required UserModel user}) async {
+  Future<UserModel> updateUserInfo({required UserModel user}) async {
     try {
       log("AppDataLayer  updateUserInfo start  user");
 
-      await SupabaseConnect.updateUserInfo(user: user);
-      log("AppDataLayer end succsfly updateUserInfo");
-    } on Exception catch (e) {
-      log("AppDataLayer  throw Exception in subabase ");
-      throw FormatException("error in update  $e");
+      return await SupabaseConnect.updateUserInfo(user: user);
+     } on Exception catch (e) {
+      log("AppDataLayer  throw Exception in subabase $e");
+      rethrow;
     }
   }
 
@@ -97,12 +96,14 @@ class AppDataLayer {
   Future<void> updateHuseLocation({
     required String id,
     required LatLng newLocation,
+    bool? isChild,
   }) async {
     log("1");
     try {
       user = await SupabaseConnect.updateHuseLocation(
         id: id,
         newLocation: newLocation,
+        isChild: isChild,
       );
       log("2");
     } catch (_) {
@@ -318,7 +319,7 @@ class AppDataLayer {
     log("notificationParent   start ");
     try {
       await SupabaseConnect.notificationParent(notifcation: notifcation);
- 
+
       log("notificationParent   end ");
     } catch (e) {
       log("notificationParent   throw ");
@@ -361,6 +362,35 @@ class AppDataLayer {
       );
     } catch (e) {
       log("app data layer  updateUSerProfileImage rethrows ");
+      rethrow;
+    }
+  }
+
+  Future<List<StudentsModel>> getParentChildren({
+    required String parentId,
+  }) async {
+    try {
+      log("app data layer start getParentChildren");
+      return await SupabaseConnect.getParentChildren(parentId: parentId);
+    } catch (e) {
+      log("app data layer error in gettting getParentChildren $e");
+
+      rethrow;
+    }
+  }
+
+  Future<StudentsModel> updateStudentInfo({
+    required StudentsModel child,
+  }) async {
+    try {
+      log("app data layer  start   ");
+
+      final response = await SupabaseConnect.updateStudentInfo(child: child);
+
+      log("app data layer end succsfly  ");
+      return response;
+    } catch (e) {
+      log("throw Exception in subabase ");
       rethrow;
     }
   }

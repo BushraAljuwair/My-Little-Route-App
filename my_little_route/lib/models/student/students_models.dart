@@ -16,8 +16,8 @@ class StudentsModel with StudentsModelMappable {
   @MappableField(key: 'driver_id')
   final String driverId;
   final String? gender;
-    final double? latitude;
-  final double? longitude;
+      double? latitude;
+    double? longitude;
 
   StudentsModel({
      this.latitude,

@@ -185,12 +185,18 @@ class SupabaseConnect {
     }
   }
 
-  static Future<void> updateUserInfo({required UserModel user}) async {
+  static Future<UserModel> updateUserInfo({required UserModel user}) async {
     try {
       log("updateUserInfo start  user");
 
-      await supabase!.from('users').update(user.toMap()).eq('id', user.id!);
+      final response = await supabase!
+          .from('users')
+          .update(user.toMap())
+          .eq('id', user.id!)
+          .select()
+          .single();
       log("end succsfly updateUserInfo");
+      return UserModelMapper.fromMap(response);
     } on Exception catch (e) {
       log("throw Exception in subabase ");
       throw FormatException("error in update  $e");
@@ -215,29 +221,64 @@ class SupabaseConnect {
     }
   }
 
-  static Future<UserModel> updateHuseLocation({
+  static Future<UserModel?> updateHuseLocation({
     required String id,
     required LatLng newLocation,
+    bool? isChild = false,
   }) async {
     try {
       log("  start   ");
 
-      final response = await supabase!
-          .from('users')
-          .update({
-            'latitude': newLocation.latitude,
-            'longitude': newLocation.longitude,
-          })
-          .eq('id', id)
-          .select()
-          .single();
+      if (isChild != null && isChild) {
+        final response = await supabase!
+            .from('students')
+            .update({
+              'latitude': newLocation.latitude,
+              'longitude': newLocation.longitude,
+            })
+            .eq('id', id);
+        log("chid new location response");
+      } else {
+        final response = await supabase!
+            .from('users')
+            .update({
+              'latitude': newLocation.latitude,
+              'longitude': newLocation.longitude,
+            })
+            .eq('id', id)
+            .select()
+            .single();
 
-      UserModel user = UserModelMapper.fromMap(response);
-      log("end succsfly  ");
-      return user;
+        UserModel user = UserModelMapper.fromMap(response);
+        log("end succsfly  ");
+        return user;
+      }
     } on Exception catch (e) {
       log("throw Exception in subabase ");
       throw FormatException("error in update location $e");
+    }
+  }
+
+  static Future<StudentsModel> updateStudentInfo({
+    required StudentsModel child,
+  }) async {
+    try {
+      log("  start   ");
+      final childMap = child.toMap();
+      childMap.remove("id");
+      final response = await supabase!
+          .from('students')
+          .update(childMap)
+          .eq('id', child.id!)
+          .select()
+          .single();
+      log("chid new location response");
+
+      log("end succsfly  ");
+      return StudentsModelMapper.fromMap(response);
+    } catch (e) {
+      log("throw Exception in subabase ");
+      throw FormatException("$e");
     }
   }
 
@@ -377,29 +418,6 @@ class SupabaseConnect {
       throw FormatException("error in update status $e");
     }
   }
-  // static Future<TripStudentsModel> updateStudentDropOffStatus({
-  //   required TripStudentsModel studentTrip,
-  // }) async {
-  //   try {
-  //     log("updateStudentPickupStatus start ");
-  //     final result = await supabase!
-  //         .from('trip_students')
-  //         .update({
-  //           'dropoff_status': studentTrip.pickupStatus,
-  //           'dropoff_time': studentTrip.pickupTime?.toIso8601String(),
-  //         })
-  //         .eq('student_id', studentTrip.studentId)
-  //         .eq('trip_id', studentTrip.tripId)
-  //         .select()
-  //         .single();
-  //     log("updateStudentDropOffStatus end");
-  //     log(result.toString());
-
-  //     return TripStudentsModelMapper.fromMap(result);
-  //   } on Exception catch (e) {
-  //     throw FormatException("error in update status $e");
-  //   }
-  // }
 
   static Future<TripModel> getTrip({required String tripId}) async {
     try {
@@ -575,120 +593,38 @@ class SupabaseConnect {
     }
   }
 
-  // static Future<void> notification({
-  //   required List<NotificationsModel> notifcation,
-  // }) async {
-  //   log("notification subabase start ");
-  //   try {
-  //     final List<Map<String, dynamic>> notficationsToInsert = notifcation.map((
-  //       element,
-  //     ) {
-  //       final notificationMap = element.toMap();
-  //       notificationMap.remove("id");
-  //       return notificationMap;
-  //     }).toList();
+  static Future<void> notification({
+    required List<NotificationsModel> notifcation,
+  }) async {
+    log("notification subabase start");
+    try {
+      if (notifcation.isEmpty) {
+        log("notifications list is empty. No data to insert.");
+        return;
+      }
 
-  //     await supabase!.from("notifications").insert(notficationsToInsert);
+      final List<Map<String, dynamic>> notificationsToInsert = notifcation.map((
+        element,
+      ) {
+        final notificationMap = element.toMap();
+        notificationMap.remove('id');
+        return notificationMap;
+      }).toList();
 
-  //     log("notification subabase end ");
-  //   } catch (e) {
-  //     log("notification subabase throw ");
-  //     throw Exception(e.toString());
-  //   }
-  // }
+      // استخدام Future.microtask لضمان عدم حظر الخيط الرئيسي
 
-  // static Future<void> notification({
-  //   required List<NotificationsModel> notifcation,
-  // }) async {
-    
-  //   log("notification subabase start 22222");
-  //   try {
-  //     for (var element in notifcation) {
-  //       final notifcationMap = element.toMap();
-  //       // notifcationMap.remove("id");
-  //       final result = await supabase!
-  //           .from("notifications")
-  //           .insert(notifcationMap)
-  //           .select();
-  //       for (var element in result) {
-  //         log("notification message ${element.toString()}");
-  //       }
-  //     }
-
-  //     log("notification subabase end ");
-  //   } catch (e) {
-  //     log("notification subabase throw ");
-  //     throw Exception(e.toString());
-  //   }
-  // }
-
-// static Future<void> notification({
-//   required List<NotificationsModel> notifcation,
-// }) async {
-//   log("notification subabase start");
-//   try {
-//     if (notifcation.isEmpty) {
-//       log("notifications list is empty. No data to insert.");
-//       return;
-//     }
-
-//     final List<Map<String, dynamic>> notificationsToInsert =
-//         notifcation.map((element) {
-//       final notificationMap = element.toMap();
-//       notificationMap.remove('id');
-//       return notificationMap;
-//     }).toList();
-    
-//     // عملية الإدراج الجماعي.
-//     final result = await supabase!
-//         .from("notifications")
-//         .insert(notificationsToInsert)
-//         .select();
-//         for (var element in result) {
-//           log("notifcations ${element.toString()}");
-//         }
-
-//     log("notification subabase end. Inserted ${result.length} records.");
-//   } catch (e) {
-//     log("notification subabase throw, an error occurred.");
-//     // ✅ هنا قمنا بتحسين log ليعرض تفاصيل الخطأ بدقة.
-//     log("Error details: ${e.toString()}");
-//     throw Exception("notification subabase throw: ${e.toString()}");
-//   }
-// }
-static Future<void> notification({
-  required List<NotificationsModel> notifcation,
-}) async {
-  log("notification subabase start");
-  try {
-    if (notifcation.isEmpty) {
-      log("notifications list is empty. No data to insert.");
-      return;
+      final result = await supabase!
+          .from("notifications")
+          .insert(notificationsToInsert)
+          .select();
+      log("notification subabase end. Inserted ${result.length} records.");
+    } catch (e) {
+      log("notification subabase throw, an error occurred.");
+      log("Error details: ${e.toString()}");
+      // ✅ طرح استثناء ليتم التقاطه في الدالة التي قامت بالمناداة
+      throw Exception("notification subabase throw: ${e.toString()}");
     }
-
-    final List<Map<String, dynamic>> notificationsToInsert =
-        notifcation.map((element) {
-      final notificationMap = element.toMap();
-      notificationMap.remove('id');
-      return notificationMap;
-    }).toList();
-    
-    // استخدام Future.microtask لضمان عدم حظر الخيط الرئيسي
-      
-        final result = await supabase!
-            .from("notifications")
-            .insert(notificationsToInsert)
-            .select();
-        log("notification subabase end. Inserted ${result.length} records.");
-    
-    
-  } catch (e) {
-    log("notification subabase throw, an error occurred.");
-    log("Error details: ${e.toString()}");
-    // ✅ طرح استثناء ليتم التقاطه في الدالة التي قامت بالمناداة
-    throw Exception("notification subabase throw: ${e.toString()}");
   }
-}
 
   static Future<void> uploadImage({
     required String path,
@@ -743,49 +679,62 @@ static Future<void> notification({
     }
   }
 
-  // static Future<void> notificationParent({
-  //   required NotificationsModel notifcation,
-  // }) async {
-  //   log("notificationParent subabase start ");
-  //   try {
-  //     final mapNotifcation = notifcation.toMap();
-  //     mapNotifcation.remove('id');
-  //    final result= await supabase!.from("notifications").insert(notifcation).select();
-  //    log("result result result ${result.toSet()}");
-
-  //     log("notificationParent subabase end ");
-  //   } catch (e) {
-  //     log("notificationParent subabase throw ");
-  //     throw Exception(e.toString());
-  //   }
-  // }
-
-
   static Future<void> notificationParent({
-  required NotificationsModel notifcation,
-}) async {
-  log("notificationParent subabase start ");
-  try {
-    // 1. تحويل الـ NotificationsModel إلى Map<String, dynamic>.
-    final mapNotifcation = notifcation.toMap();
-    
-    // 2. إزالة حقل 'id' من الـ Map،
-    // لكي يتم إنشاء ID جديد تلقائيًا بواسطة Supabase.
-    mapNotifcation.remove('id');
+    required NotificationsModel notifcation,
+  }) async {
+    log("notificationParent subabase start ");
+    try {
+      // 1. تحويل الـ NotificationsModel إلى Map<String, dynamic>.
+      final mapNotifcation = notifcation.toMap();
 
-    // 3. استخدام الـ Map المعدّل في دالة insert.
-    // هذا هو التعديل الأساسي لحل المشكلة.
-    final result = await supabase!.from("notifications").insert(mapNotifcation).select();
-    
-    // طباعة النتيجة للتأكد من نجاح العملية.
-    // إذا كان كل شيء على ما يرام، ستحتوي النتيجة على Map واحد.
-    log("result result result ${result.toSet()}");
+      // 2. إزالة حقل 'id' من الـ Map،
+      // لكي يتم إنشاء ID جديد تلقائيًا بواسطة Supabase.
+      mapNotifcation.remove('id');
 
-    log("notificationParent subabase end ");
-  } catch (e) {
-    log("notificationParent subabase throw ");
-    throw Exception(e.toString());
+      // 3. استخدام الـ Map المعدّل في دالة insert.
+      // هذا هو التعديل الأساسي لحل المشكلة.
+      final result = await supabase!
+          .from("notifications")
+          .insert(mapNotifcation)
+          .select();
+
+      // طباعة النتيجة للتأكد من نجاح العملية.
+      // إذا كان كل شيء على ما يرام، ستحتوي النتيجة على Map واحد.
+      log("result result result ${result.toSet()}");
+
+      log("notificationParent subabase end ");
+    } catch (e) {
+      log("notificationParent subabase throw ");
+      throw Exception(e.toString());
+    }
   }
-}
 
+  static Future<List<StudentsModel>> getParentChildren({
+    required String parentId,
+  }) async {
+    List<StudentsModel> students;
+    try {
+      log("start getParentChildren");
+      final response = await supabase!
+          .from('students')
+          .select()
+          .eq("parent_id", parentId);
+      log("response getStudents end ");
+
+      if (response.isNotEmpty) {
+        log("response not empty  ");
+
+        students = response
+            .map((student) => StudentsModelMapper.fromMap(student))
+            .toList();
+
+        return students;
+      }
+    } catch (e) {
+      log("error in gettting getParentChildren $e");
+
+      throw Exception("error in gettting childern $e");
+    }
+    return [];
+  }
 }
