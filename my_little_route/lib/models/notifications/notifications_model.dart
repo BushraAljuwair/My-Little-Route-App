@@ -14,13 +14,13 @@ class NotificationsModel with NotificationsModelMappable {
   final bool isRead;
  
   @MappableField(key: 'created_at')
-  final DateTime? createdAt;
+  final DateTime createdAt;
 
   NotificationsModel({
       this.id,
     required this.userId,
      required this.isRead,
     required this.message,
-      this.createdAt,
+    required  this.createdAt,
   });
 }

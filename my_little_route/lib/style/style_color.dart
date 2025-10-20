@@ -22,4 +22,8 @@ class StyleColor {
   static const Color buttonOrange = Color(0xFFFF9800);
   static const Color offWhite = Color(0xFFfafbfc);
   static const softBlue = Color(0xFFdae3f7);
+  static const teal = Color(0xFF0fa0a1);
+    static const darkBlue = Color(0xFF00415f);
+    static const yellowOrange = Color(0xFFf5b126);
+
 }

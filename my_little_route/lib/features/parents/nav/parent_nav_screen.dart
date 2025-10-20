@@ -30,10 +30,10 @@ class ParentNavScreen extends StatelessWidget {
                       icon: Icon(Icons.home),
                       label: "home",
                     ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.notification_add_sharp),
-                      label: "notifcation",
-                    ),
+                    // BottomNavigationBarItem(
+                    //   icon: Icon(Icons.notification_add_sharp),
+                    //   label: "notifcation",
+                    // ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.person),
                       label: "profile",

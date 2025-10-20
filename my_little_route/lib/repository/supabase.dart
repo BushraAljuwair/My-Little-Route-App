@@ -738,5 +738,145 @@ class SupabaseConnect {
     return [];
   }
 
-  
+  static Future<TripModel> getCurrentTrip({required String busId}) async {
+    try {
+      log("start getCurrentTrip");
+      final activeTrip = await supabase!
+          .from('trips')
+          .select()
+          .eq("bus_id", busId)
+          .neq('status', 'completed')
+          .select()
+          .single();
+      return TripModelMapper.fromMap(activeTrip);
+    } catch (e) {
+      log("error in getCurrentTrip$e");
+
+      throw Exception("No active trip found for this bus $e");
+    }
+  }
+
+  static Future<Stream> getCurrentLocationFromDB({
+    required String busId,
+  }) async {
+    try {
+      final activeTrip = await supabase!
+          .from('trips')
+          .select()
+          .eq("bus_id", busId)
+          .neq('status', 'completed')
+          .maybeSingle();
+
+      if (activeTrip == null) {
+        throw Exception("No active trip found for this bus");
+      }
+
+      final locationStream = supabase!
+          .from('bus_locations')
+          .stream(primaryKey: ['id'])
+          .eq('bus_id', busId)
+          .order('timestamp', ascending: false)
+          .limit(1);
+
+      return locationStream;
+    } catch (e) {
+      log("stream error ${e.toString()}");
+      throw FormatException(e.toString());
+    }
+  }
+  // static Stream<List<Map<String, dynamic>>> notificationsMessage({required String userId}) {
+  //   try {
+  //     final notificationsStream = supabase!
+  //         .from('notifications')
+  //         .stream(primaryKey: ['id'])
+  //         .eq('user_id', userId);
+
+  //     return notificationsStream;
+  //   } catch (e) {
+  //     log("stream error ${e.toString()}");
+  //     rethrow;
+  //   }
+  // }
+
+  // static Stream<List<NotificationsModel>> notificationsMessage({
+  //   required String userId,
+  // }) {
+  //   try {
+  //     final stream = supabase!
+  //         .from('notifications')
+  //         .stream(primaryKey: ['id'])
+  //         .eq('user_id', userId)
+  //         .map((eventList) {
+  //           return eventList
+  //               .map((json) => NotificationsModelMapper.fromMap(json))
+  //               .toList();
+  //         });
+
+  //     return stream;
+  //   } catch (e) {
+  //     log("stream error ${e.toString()}");
+  //     rethrow;
+  //   }
+  // }
+static Stream<List<NotificationsModel>> notificationsMessage({required String userId}) {
+  try {
+    return supabase!
+        .from('notifications')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .map((data) {
+          final list = data
+              .map((json) => NotificationsModelMapper.fromMap(json))
+              .toList();
+
+          // أولاً: نقسم الإشعارات إلى مقروء وغير مقروء
+          final unread = list
+              .where((notification) => !notification.isRead)
+              .toList()
+            ..sort((a, b) => b.createdAt.compareTo(a.createdAt)); // الأحدث أولاً
+
+          final read = list
+              .where((notification) => notification.isRead)
+              .toList()
+            ..sort((a, b) => b.createdAt.compareTo(a.createdAt)); // الأحدث أولاً
+
+          // ثم ندمجهم: غير مقروء أول، ثم مقروء
+          return [...unread, ...read];
+        });
+  } catch (e) {
+    log("stream error ${e.toString()}");
+    rethrow;
+  }
+}
+
+  //   // Data Layer - This is the static method you provided
+  // // It's a great pattern to keep this logic separate from the BLoC.
+  // static Future<Stream<List<Map<String, dynamic>>>> getCurrentLocationFromDB({
+  //   required String busId,
+  // }) async {
+  //   try {
+  //     final activeTrip = await supabase!
+  //         .from('trips')
+  //         .select()
+  //         .eq("bus_id", busId)
+  //         .neq('status', 'completed')
+  //         .maybeSingle();
+
+  //     if (activeTrip == null) {
+  //       throw Exception("No active trip found for this bus");
+  //     }
+
+  //     final locationStream = supabase!
+  //         .from('bus_locations')
+  //         .stream(primaryKey: ['id'])
+  //         .eq('bus_id', busId)
+  //         .order('timestamp', ascending: false)
+  //         .limit(1);
+
+  //     return locationStream;
+  //   } catch (e) {
+  //     log("stream error ${e.toString()}");
+  //     rethrow;
+  //   }
+  // }
 }

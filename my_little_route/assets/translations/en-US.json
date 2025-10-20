@@ -54,8 +54,9 @@
         "childrenarrivedkindergarten.": "The children have arrived at kindergarten.",
         "driverwayhome": "The driver is on his way to your home. Please get your child ready and wait near the door.",
         "buscoming": "The bus is coming to yor house. Please pay attention to the phone so you can pick up your child.",
-        "child":"child",
-        "driver":"driver",
-        "gender":"gender",
-        "YourHome":"Your Home"
+        "child": "child",
+        "driver": "driver",
+        "gender": "gender",
+        "YourHome": "Your Home",
+        "Trackbus": "Track bus now"
 }

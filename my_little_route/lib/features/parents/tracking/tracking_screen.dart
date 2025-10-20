@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:my_little_route/features/parents/tray_tracking/bloc/tray_tracking_bloc.dart';
+import 'package:my_little_route/features/parents/tracking/bloc/tracking_bloc.dart';
 import 'package:my_little_route/style/style_color.dart';
 import 'package:my_little_route/style/style_text.dart';
-
-class TrayTrackingScreen extends StatelessWidget {
-  const TrayTrackingScreen({super.key});
+class TrackingScreen extends StatelessWidget {
+  const TrackingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TrayTrackingBloc()..add(SetInitValuesEvent()),
+      create: (context) => TrackingBloc()..add(SetInitValuesEvent()),
       child: Builder(
         builder: (context) {
-          final bloc = context.read<TrayTrackingBloc>();
+          final bloc = context.read<TrackingBloc>();
           return Scaffold(
-            body: BlocBuilder<TrayTrackingBloc, TrayTrackingState>(
+            body: BlocBuilder< TrackingBloc, TrackingState>(
               builder: (context, state) {
                 if (state is ErrorState) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -31,36 +30,34 @@ class TrayTrackingScreen extends StatelessWidget {
                   );
                 }
                 if (state is SucssesState) {
-                  if (bloc.currentLocation == null) {
-                    return Center(child: Text("current location error "));
+                  // Ensure currentBusLocation is not null before displaying the map
+                  if (bloc.currentBusLocation == null) {
+                    return Center(child: Text("Bus location not available."));
                   }
                   return GoogleMap(
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(bloc.currentLocation!.latitude!,
-                          bloc.currentLocation!.longitude!),
+                      target: bloc.currentBusLocation!,
                       zoom: 13.5,
                     ),
                     onMapCreated: (mapContollar) {
-                      // NEW: We dispatch the new event here!
                       bloc.add(MapCreatedEvent(controller: mapContollar));
                     },
                     markers: {
                       Marker(
                         markerId: MarkerId("source"),
-                        position: bloc.sourceLocation,
-
-                        icon: bloc.sourceIcon
+                        position: bloc.sourceLocation!,
+                        icon: bloc.sourceIcon,
                       ),
                       Marker(
                         markerId: MarkerId("destination"),
-                        position: bloc.destination,
-                         icon: bloc.destinationIcon
+                        position: bloc.destination!,
+                        icon: bloc.destinationIcon,
                       ),
+                      // This marker will now track the bus location
                       Marker(
-                        markerId: MarkerId("currentLocation"),
-                        position: LatLng(bloc.currentLocation!.latitude!,
-                            bloc.currentLocation!.longitude!),
-                             icon: bloc.currentLocationIcon
+                        markerId: MarkerId("busLocation"),
+                        position: bloc.currentBusLocation!,
+                        icon: bloc.busIcon,
                       ),
                     },
                     polylines: {

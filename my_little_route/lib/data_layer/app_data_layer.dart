@@ -75,7 +75,7 @@ class AppDataLayer {
       log("AppDataLayer  updateUserInfo start  user");
 
       return await SupabaseConnect.updateUserInfo(user: user);
-     } on Exception catch (e) {
+    } on Exception catch (e) {
       log("AppDataLayer  throw Exception in subabase $e");
       rethrow;
     }
@@ -391,6 +391,52 @@ class AppDataLayer {
       return response;
     } catch (e) {
       log("throw Exception in subabase ");
+      rethrow;
+    }
+  }
+
+  Future<TripModel> getCurrentTrip({required String busId}) async {
+    try {
+      log("start getCurrentTrip");
+      return await SupabaseConnect.getCurrentTrip(busId: busId);
+    } catch (e) {
+      log("error in getCurrentTrip$e");
+      throw Exception("No active trip found for this bus $e");
+    }
+  }
+
+  Future<Stream> getCurrentLocationFromDB({required String busId}) async {
+    try {
+      return SupabaseConnect.getCurrentLocationFromDB(busId: busId);
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+
+  // Future<Stream> notificationsMessage({required String userId}) async {
+  //   try {
+  //      return await SupabaseConnect.notificationsMessage(
+  //       userId: userId,
+  //     );
+
+  //   } catch (e) {
+  //     log("stream error ${e.toString()}");
+  //     rethrow;
+  //   }
+  // }
+
+ Stream<List<NotificationsModel>> notificationsMessage({
+    required String userId,
+  }) {
+    try {
+      log("notificationsMessagea app data start");
+      final stream = 
+      SupabaseConnect.notificationsMessage(userId: userId);
+      log("notificationsMessagea app data end");
+
+      return stream;
+    } catch (e) {
+      log("stream error ${e.toString()}");
       rethrow;
     }
   }

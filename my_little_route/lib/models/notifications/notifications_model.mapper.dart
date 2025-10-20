@@ -32,9 +32,9 @@ class NotificationsModelMapper extends ClassMapperBase<NotificationsModel> {
   static String _$message(NotificationsModel v) => v.message;
   static const Field<NotificationsModel, String> _f$message =
       Field('message', _$message);
-  static DateTime? _$createdAt(NotificationsModel v) => v.createdAt;
+  static DateTime _$createdAt(NotificationsModel v) => v.createdAt;
   static const Field<NotificationsModel, DateTime> _f$createdAt =
-      Field('createdAt', _$createdAt, key: r'created_at', opt: true);
+      Field('createdAt', _$createdAt, key: r'created_at');
 
   @override
   final MappableFields<NotificationsModel> fields = const {
@@ -133,13 +133,13 @@ class _NotificationsModelCopyWithImpl<$R, $Out>
           String? userId,
           bool? isRead,
           String? message,
-          Object? createdAt = $none}) =>
+          DateTime? createdAt}) =>
       $apply(FieldCopyWithData({
         if (id != $none) #id: id,
         if (userId != null) #userId: userId,
         if (isRead != null) #isRead: isRead,
         if (message != null) #message: message,
-        if (createdAt != $none) #createdAt: createdAt
+        if (createdAt != null) #createdAt: createdAt
       }));
   @override
   NotificationsModel $make(CopyWithData data) => NotificationsModel(
